@@ -18,13 +18,16 @@ kotlin {
 // Force JDK 11 for all Kotlin compilation
 System.setProperty("org.gradle.java.home", System.getenv("JAVA_HOME"))
 
-// Skip kapt tasks for problematic modules only
+// Enable all kapt tasks to ensure Hilt code generation works properly
+// Previously we were skipping some kapt tasks, but this prevented Hilt from generating needed classes
+/*
 tasks.whenTaskAdded { task ->
     if (task.name.contains('kaptGenerateStubsDebugKotlin') || task.name.contains('kaptGenerateStubsReleaseKotlin')) {
         // Only disable the stub generation tasks, not the actual processing
         task.enabled = false
     }
 }
+*/
 
 // Configure annotation processing
 kapt {
