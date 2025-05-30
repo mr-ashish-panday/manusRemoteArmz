@@ -1,9 +1,9 @@
 -- Merging decision tree log ---
 manifest
-ADDED from C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\AndroidManifest.xml:2:1-33:12
-INJECTED from C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\AndroidManifest.xml:2:1-33:12
-INJECTED from C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\AndroidManifest.xml:2:1-33:12
-INJECTED from C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\AndroidManifest.xml:2:1-33:12
+ADDED from C:\Users\Ashish\AndroidStudioProjects\scratch11\app\src\main\AndroidManifest.xml:2:1-33:12
+INJECTED from C:\Users\Ashish\AndroidStudioProjects\scratch11\app\src\main\AndroidManifest.xml:2:1-33:12
+INJECTED from C:\Users\Ashish\AndroidStudioProjects\scratch11\app\src\main\AndroidManifest.xml:2:1-33:12
+INJECTED from C:\Users\Ashish\AndroidStudioProjects\scratch11\app\src\main\AndroidManifest.xml:2:1-33:12
 MERGED from [nl.dionsegijn:konfetti-compose:2.0.3] C:\Users\Ashish\.gradle\caches\transforms-3\8d6a864d76ef9ca05b217581c0b1a16d\transformed\jetified-konfetti-compose-2.0.3\AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.work:work-runtime-ktx:2.9.0] C:\Users\Ashish\.gradle\caches\transforms-3\63ff8b7554aa4ab59adeb42dcddb7ac7\transformed\work-runtime-ktx-2.9.0\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.hilt:hilt-work:1.1.0] C:\Users\Ashish\.gradle\caches\transforms-3\018ef1cc4f27103504523eb2e5b8d02f\transformed\jetified-hilt-work-1.1.0\AndroidManifest.xml:17:1-22:12
@@ -87,37 +87,37 @@ MERGED from [androidx.startup:startup-runtime:1.1.1] C:\Users\Ashish\.gradle\cac
 MERGED from [androidx.interpolator:interpolator:1.0.0] C:\Users\Ashish\.gradle\caches\transforms-3\950acd7b413ed302398a924c234b7c53\transformed\interpolator-1.0.0\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.tracing:tracing:1.0.0] C:\Users\Ashish\.gradle\caches\transforms-3\302b1e8420de79079ac7bd9542224b1c\transformed\jetified-tracing-1.0.0\AndroidManifest.xml:17:1-24:12
 MERGED from [com.google.dagger:dagger-lint-aar:2.44] C:\Users\Ashish\.gradle\caches\transforms-3\90d01f2bacbc133845726df8325924f3\transformed\jetified-dagger-lint-aar-2.44\AndroidManifest.xml:16:1-19:12
-INJECTED from C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\AndroidManifest.xml:2:1-33:12
-INJECTED from C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\AndroidManifest.xml:2:1-33:12
-INJECTED from C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\AndroidManifest.xml:2:1-33:12
+INJECTED from C:\Users\Ashish\AndroidStudioProjects\scratch11\app\src\main\AndroidManifest.xml:2:1-33:12
+INJECTED from C:\Users\Ashish\AndroidStudioProjects\scratch11\app\src\main\AndroidManifest.xml:2:1-33:12
+INJECTED from C:\Users\Ashish\AndroidStudioProjects\scratch11\app\src\main\AndroidManifest.xml:2:1-33:12
 	package
-		INJECTED from C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\AndroidManifest.xml
-		ADDED from C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\AndroidManifest.xml:2:1-33:12
-		INJECTED from C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\Ashish\AndroidStudioProjects\scratch11\app\src\main\AndroidManifest.xml
+		ADDED from C:\Users\Ashish\AndroidStudioProjects\scratch11\app\src\main\AndroidManifest.xml:2:1-33:12
+		INJECTED from C:\Users\Ashish\AndroidStudioProjects\scratch11\app\src\main\AndroidManifest.xml
 	android:versionName
-		INJECTED from C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\AndroidManifest.xml
-		ADDED from C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\AndroidManifest.xml:2:1-33:12
-		INJECTED from C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\Ashish\AndroidStudioProjects\scratch11\app\src\main\AndroidManifest.xml
+		ADDED from C:\Users\Ashish\AndroidStudioProjects\scratch11\app\src\main\AndroidManifest.xml:2:1-33:12
+		INJECTED from C:\Users\Ashish\AndroidStudioProjects\scratch11\app\src\main\AndroidManifest.xml
 	android:versionCode
-		INJECTED from C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\AndroidManifest.xml
-		ADDED from C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\AndroidManifest.xml:2:1-33:12
-		INJECTED from C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\Ashish\AndroidStudioProjects\scratch11\app\src\main\AndroidManifest.xml
+		ADDED from C:\Users\Ashish\AndroidStudioProjects\scratch11\app\src\main\AndroidManifest.xml:2:1-33:12
+		INJECTED from C:\Users\Ashish\AndroidStudioProjects\scratch11\app\src\main\AndroidManifest.xml
 	xmlns:android
-		ADDED from C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\AndroidManifest.xml:2:11-69
+		ADDED from C:\Users\Ashish\AndroidStudioProjects\scratch11\app\src\main\AndroidManifest.xml:2:11-69
 uses-permission#android.permission.INTERNET
-ADDED from C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\AndroidManifest.xml:4:5-67
+ADDED from C:\Users\Ashish\AndroidStudioProjects\scratch11\app\src\main\AndroidManifest.xml:4:5-67
 	android:name
-		ADDED from C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\AndroidManifest.xml:4:22-64
+		ADDED from C:\Users\Ashish\AndroidStudioProjects\scratch11\app\src\main\AndroidManifest.xml:4:22-64
 uses-permission#android.permission.GET_ACCOUNTS
-ADDED from C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\AndroidManifest.xml:5:5-71
+ADDED from C:\Users\Ashish\AndroidStudioProjects\scratch11\app\src\main\AndroidManifest.xml:5:5-71
 	android:name
-		ADDED from C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\AndroidManifest.xml:5:22-68
+		ADDED from C:\Users\Ashish\AndroidStudioProjects\scratch11\app\src\main\AndroidManifest.xml:5:22-68
 uses-permission#android.permission.POST_NOTIFICATIONS
-ADDED from C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\AndroidManifest.xml:6:5-77
+ADDED from C:\Users\Ashish\AndroidStudioProjects\scratch11\app\src\main\AndroidManifest.xml:6:5-77
 	android:name
-		ADDED from C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\AndroidManifest.xml:6:22-74
+		ADDED from C:\Users\Ashish\AndroidStudioProjects\scratch11\app\src\main\AndroidManifest.xml:6:22-74
 application
-ADDED from C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\AndroidManifest.xml:8:5-31:19
+ADDED from C:\Users\Ashish\AndroidStudioProjects\scratch11\app\src\main\AndroidManifest.xml:8:5-31:19
 MERGED from [androidx.work:work-runtime:2.9.0] C:\Users\Ashish\.gradle\caches\transforms-3\c8579443ea237d77b2711e5dfd99d807\transformed\work-runtime-2.9.0\AndroidManifest.xml:28:5-143:19
 MERGED from [androidx.work:work-runtime:2.9.0] C:\Users\Ashish\.gradle\caches\transforms-3\c8579443ea237d77b2711e5dfd99d807\transformed\work-runtime-2.9.0\AndroidManifest.xml:28:5-143:19
 MERGED from [androidx.room:room-runtime:2.5.2] C:\Users\Ashish\.gradle\caches\transforms-3\27b932ae12e24074fea0197d35da01d7\transformed\room-runtime-2.5.2\AndroidManifest.xml:23:5-29:19
@@ -153,49 +153,49 @@ MERGED from [androidx.startup:startup-runtime:1.1.1] C:\Users\Ashish\.gradle\cac
 	android:appComponentFactory
 		ADDED from [androidx.core:core:1.10.1] C:\Users\Ashish\.gradle\caches\transforms-3\36f124b03f4dbe03d108a9a4bf4c6874\transformed\core-1.10.1\AndroidManifest.xml:28:18-86
 	android:supportsRtl
-		ADDED from C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\AndroidManifest.xml:14:9-35
+		ADDED from C:\Users\Ashish\AndroidStudioProjects\scratch11\app\src\main\AndroidManifest.xml:14:9-35
 	android:label
-		ADDED from C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\AndroidManifest.xml:12:9-35
+		ADDED from C:\Users\Ashish\AndroidStudioProjects\scratch11\app\src\main\AndroidManifest.xml:12:9-35
 	android:roundIcon
-		ADDED from C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\AndroidManifest.xml:13:9-54
+		ADDED from C:\Users\Ashish\AndroidStudioProjects\scratch11\app\src\main\AndroidManifest.xml:13:9-54
 	android:icon
-		ADDED from C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\AndroidManifest.xml:11:9-43
+		ADDED from C:\Users\Ashish\AndroidStudioProjects\scratch11\app\src\main\AndroidManifest.xml:11:9-43
 	android:allowBackup
-		ADDED from C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\AndroidManifest.xml:10:9-35
+		ADDED from C:\Users\Ashish\AndroidStudioProjects\scratch11\app\src\main\AndroidManifest.xml:10:9-35
 	android:theme
-		ADDED from C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\AndroidManifest.xml:15:9-48
+		ADDED from C:\Users\Ashish\AndroidStudioProjects\scratch11\app\src\main\AndroidManifest.xml:15:9-48
 	android:name
-		ADDED from C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\AndroidManifest.xml:9:9-46
+		ADDED from C:\Users\Ashish\AndroidStudioProjects\scratch11\app\src\main\AndroidManifest.xml:9:9-46
 meta-data#com.google.android.gms.version
-ADDED from C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\AndroidManifest.xml:18:9-20:69
+ADDED from C:\Users\Ashish\AndroidStudioProjects\scratch11\app\src\main\AndroidManifest.xml:18:9-20:69
 MERGED from [com.google.android.gms:play-services-basement:18.2.0] C:\Users\Ashish\.gradle\caches\transforms-3\43fc9385dadb90ec4acf398221372907\transformed\jetified-play-services-basement-18.2.0\AndroidManifest.xml:21:9-23:69
 MERGED from [com.google.android.gms:play-services-basement:18.2.0] C:\Users\Ashish\.gradle\caches\transforms-3\43fc9385dadb90ec4acf398221372907\transformed\jetified-play-services-basement-18.2.0\AndroidManifest.xml:21:9-23:69
 	android:value
-		ADDED from C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\AndroidManifest.xml:20:13-66
+		ADDED from C:\Users\Ashish\AndroidStudioProjects\scratch11\app\src\main\AndroidManifest.xml:20:13-66
 	android:name
-		ADDED from C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\AndroidManifest.xml:19:13-58
+		ADDED from C:\Users\Ashish\AndroidStudioProjects\scratch11\app\src\main\AndroidManifest.xml:19:13-58
 activity#com.remotearmz.commandcenter.MainActivity
-ADDED from C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\AndroidManifest.xml:22:9-30:20
+ADDED from C:\Users\Ashish\AndroidStudioProjects\scratch11\app\src\main\AndroidManifest.xml:22:9-30:20
 	android:exported
-		ADDED from C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\AndroidManifest.xml:24:13-36
+		ADDED from C:\Users\Ashish\AndroidStudioProjects\scratch11\app\src\main\AndroidManifest.xml:24:13-36
 	android:theme
-		ADDED from C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\AndroidManifest.xml:25:13-52
+		ADDED from C:\Users\Ashish\AndroidStudioProjects\scratch11\app\src\main\AndroidManifest.xml:25:13-52
 	android:name
-		ADDED from C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\AndroidManifest.xml:23:13-41
+		ADDED from C:\Users\Ashish\AndroidStudioProjects\scratch11\app\src\main\AndroidManifest.xml:23:13-41
 intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
-ADDED from C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\AndroidManifest.xml:26:13-29:29
+ADDED from C:\Users\Ashish\AndroidStudioProjects\scratch11\app\src\main\AndroidManifest.xml:26:13-29:29
 action#android.intent.action.MAIN
-ADDED from C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\AndroidManifest.xml:27:17-69
+ADDED from C:\Users\Ashish\AndroidStudioProjects\scratch11\app\src\main\AndroidManifest.xml:27:17-69
 	android:name
-		ADDED from C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\AndroidManifest.xml:27:25-66
+		ADDED from C:\Users\Ashish\AndroidStudioProjects\scratch11\app\src\main\AndroidManifest.xml:27:25-66
 category#android.intent.category.LAUNCHER
-ADDED from C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\AndroidManifest.xml:28:17-77
+ADDED from C:\Users\Ashish\AndroidStudioProjects\scratch11\app\src\main\AndroidManifest.xml:28:17-77
 	android:name
-		ADDED from C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\AndroidManifest.xml:28:27-74
+		ADDED from C:\Users\Ashish\AndroidStudioProjects\scratch11\app\src\main\AndroidManifest.xml:28:27-74
 uses-sdk
-INJECTED from C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
-INJECTED from C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\AndroidManifest.xml
-INJECTED from C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\AndroidManifest.xml
+INJECTED from C:\Users\Ashish\AndroidStudioProjects\scratch11\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from C:\Users\Ashish\AndroidStudioProjects\scratch11\app\src\main\AndroidManifest.xml
+INJECTED from C:\Users\Ashish\AndroidStudioProjects\scratch11\app\src\main\AndroidManifest.xml
 MERGED from [nl.dionsegijn:konfetti-compose:2.0.3] C:\Users\Ashish\.gradle\caches\transforms-3\8d6a864d76ef9ca05b217581c0b1a16d\transformed\jetified-konfetti-compose-2.0.3\AndroidManifest.xml:5:5-44
 MERGED from [nl.dionsegijn:konfetti-compose:2.0.3] C:\Users\Ashish\.gradle\caches\transforms-3\8d6a864d76ef9ca05b217581c0b1a16d\transformed\jetified-konfetti-compose-2.0.3\AndroidManifest.xml:5:5-44
 MERGED from [androidx.work:work-runtime-ktx:2.9.0] C:\Users\Ashish\.gradle\caches\transforms-3\63ff8b7554aa4ab59adeb42dcddb7ac7\transformed\work-runtime-ktx-2.9.0\AndroidManifest.xml:20:5-44
@@ -362,16 +362,16 @@ MERGED from [androidx.tracing:tracing:1.0.0] C:\Users\Ashish\.gradle\caches\tran
 MERGED from [androidx.tracing:tracing:1.0.0] C:\Users\Ashish\.gradle\caches\transforms-3\302b1e8420de79079ac7bd9542224b1c\transformed\jetified-tracing-1.0.0\AndroidManifest.xml:20:5-22:41
 MERGED from [com.google.dagger:dagger-lint-aar:2.44] C:\Users\Ashish\.gradle\caches\transforms-3\90d01f2bacbc133845726df8325924f3\transformed\jetified-dagger-lint-aar-2.44\AndroidManifest.xml:18:3-42
 MERGED from [com.google.dagger:dagger-lint-aar:2.44] C:\Users\Ashish\.gradle\caches\transforms-3\90d01f2bacbc133845726df8325924f3\transformed\jetified-dagger-lint-aar-2.44\AndroidManifest.xml:18:3-42
-INJECTED from C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\AndroidManifest.xml
-INJECTED from C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\AndroidManifest.xml
+INJECTED from C:\Users\Ashish\AndroidStudioProjects\scratch11\app\src\main\AndroidManifest.xml
+INJECTED from C:\Users\Ashish\AndroidStudioProjects\scratch11\app\src\main\AndroidManifest.xml
 	android:targetSdkVersion
-		INJECTED from C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\AndroidManifest.xml
-		ADDED from C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\AndroidManifest.xml
-		INJECTED from C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\Ashish\AndroidStudioProjects\scratch11\app\src\main\AndroidManifest.xml
+		ADDED from C:\Users\Ashish\AndroidStudioProjects\scratch11\app\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\Ashish\AndroidStudioProjects\scratch11\app\src\main\AndroidManifest.xml
 	android:minSdkVersion
-		INJECTED from C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\AndroidManifest.xml
-		ADDED from C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\AndroidManifest.xml
-		INJECTED from C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\Ashish\AndroidStudioProjects\scratch11\app\src\main\AndroidManifest.xml
+		ADDED from C:\Users\Ashish\AndroidStudioProjects\scratch11\app\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\Ashish\AndroidStudioProjects\scratch11\app\src\main\AndroidManifest.xml
 uses-permission#android.permission.WAKE_LOCK
 ADDED from [androidx.work:work-runtime:2.9.0] C:\Users\Ashish\.gradle\caches\transforms-3\c8579443ea237d77b2711e5dfd99d807\transformed\work-runtime-2.9.0\AndroidManifest.xml:23:5-68
 	android:name

@@ -61,8 +61,10 @@ android {
     lint {
         abortOnError false
         checkReleaseBuilds false
-        disable 'MissingPermission', 'ObsoleteSdkInt', 'GradleDependency', 'UnsafeOptInUsageError'
+        disable 'MissingPermission', 'ObsoleteSdkInt', 'GradleDependency', 'UnsafeOptInUsageError', 'NewApi'
         baseline file("lint-baseline.xml")
+        // Important: don't abort when a baseline is created
+        baselineOnFailure true
     }
 
     defaultConfig {

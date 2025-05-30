@@ -25,10 +25,9 @@ object DateCountdownUtil {
      */
     fun getDaysUntil(targetMillis: Long): Int {
         val today = LocalDate.now(ZoneId.systemDefault())
-        val targetDate = LocalDate.ofInstant(
-            java.time.Instant.ofEpochMilli(targetMillis),
-            ZoneId.systemDefault()
-        )
+        // Use java.util.Date to convert milliseconds to LocalDate (works on API 26+)
+        val date = java.util.Date(targetMillis)
+        val targetDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
         
         return ChronoUnit.DAYS.between(today, targetDate).toInt().coerceAtLeast(0)
     }
@@ -38,10 +37,9 @@ object DateCountdownUtil {
      */
     fun getDaysSince(pastMillis: Long): Int {
         val today = LocalDate.now(ZoneId.systemDefault())
-        val pastDate = LocalDate.ofInstant(
-            java.time.Instant.ofEpochMilli(pastMillis),
-            ZoneId.systemDefault()
-        )
+        // Use java.util.Date to convert milliseconds to LocalDate (works on API 26+)
+        val date = java.util.Date(pastMillis)
+        val pastDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
         
         return ChronoUnit.DAYS.between(pastDate, today).toInt().coerceAtLeast(0)
     }

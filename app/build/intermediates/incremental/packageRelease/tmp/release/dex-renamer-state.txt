@@ -1,9 +1,9 @@
-#Fri May 30 17:42:52 NPT 2025
-base.2=C\:\\Users\\Ashish\\scratch1\\RemoteArmz\\app\\build\\intermediates\\dex\\release\\mergeDexRelease\\classes3.dex
+#Fri May 30 18:50:20 NPT 2025
+base.2=C\:\\Users\\Ashish\\AndroidStudioProjects\\scratch11\\app\\build\\intermediates\\dex\\release\\mergeDexRelease\\classes3.dex
 path.2=classes3.dex
-base.1=C\:\\Users\\Ashish\\scratch1\\RemoteArmz\\app\\build\\intermediates\\dex\\release\\mergeDexRelease\\classes2.dex
+base.1=C\:\\Users\\Ashish\\AndroidStudioProjects\\scratch11\\app\\build\\intermediates\\dex\\release\\mergeDexRelease\\classes2.dex
 path.1=classes2.dex
-base.0=C\:\\Users\\Ashish\\scratch1\\RemoteArmz\\app\\build\\intermediates\\dex\\release\\mergeDexRelease\\classes.dex
+base.0=C\:\\Users\\Ashish\\AndroidStudioProjects\\scratch11\\app\\build\\intermediates\\dex\\release\\mergeDexRelease\\classes.dex
 renamed.2=classes3.dex
 renamed.1=classes2.dex
 renamed.0=classes.dex
