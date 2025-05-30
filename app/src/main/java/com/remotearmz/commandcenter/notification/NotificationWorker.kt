@@ -92,7 +92,7 @@ class NotificationWorker @AssistedInject constructor(
         
         // Check if today is Monday (Calendar.MONDAY = 2)
         if (calendar.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY) {
-            val clientCount = clientRepository.getTotalClientCount().first()
+            val clientCount = clientRepository.getAllClients().first().size
             val leadCount = leadRepository.getActiveLeadCount().first()
             
             // Get overall target progress

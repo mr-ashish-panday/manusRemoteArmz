@@ -2,9 +2,11 @@ package com.remotearmz.commandcenter.data.repository
 
 import com.remotearmz.commandcenter.data.dao.OutreachActivityDao
 import com.remotearmz.commandcenter.data.model.ContactType
+import com.remotearmz.commandcenter.data.model.OutcomeCount
 import com.remotearmz.commandcenter.data.model.OutreachActivity
 import com.remotearmz.commandcenter.data.model.OutreachOutcome
 import com.remotearmz.commandcenter.data.model.OutreachType
+import com.remotearmz.commandcenter.data.model.TypeCount
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -38,9 +40,9 @@ class OutreachRepository @Inject constructor(
     
     fun getOutreachSuccessRate(): Flow<Float> = outreachActivityDao.getOutreachSuccessRate()
     
-    fun getOutreachCountByType(): Flow<Map<OutreachType, Int>> = outreachActivityDao.getOutreachCountByType()
+    suspend fun getOutreachCountByType(): List<TypeCount> = outreachActivityDao.getOutreachCountByType()
     
-    fun getOutreachCountByOutcome(): Flow<Map<OutreachOutcome, Int>> = outreachActivityDao.getOutreachCountByOutcome()
+    suspend fun getOutreachCountByOutcome(): List<OutcomeCount> = outreachActivityDao.getOutreachCountByOutcome()
     
     suspend fun getOutreachActivityById(id: String): OutreachActivity? = outreachActivityDao.getOutreachActivityById(id)
     

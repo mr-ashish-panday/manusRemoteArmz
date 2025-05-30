@@ -61,7 +61,7 @@ class LeadViewModel @Inject constructor(
         leadRepository.getLeadCountByStatus(LeadStatus.WON)
     ) { allLeads, wonCount ->
         val totalCount = allLeads.size
-        val activeCount = allLeads.count { it.status == LeadStatus.ACTIVE }
+        val activeCount = allLeads.count { it.status == LeadStatus.CONTACTED || it.status == LeadStatus.QUALIFIED || it.status == LeadStatus.PROPOSAL || it.status == LeadStatus.NEGOTIATION }
         val lostCount = allLeads.count { it.status == LeadStatus.LOST }
         val newCount = allLeads.count { it.status == LeadStatus.NEW }
         

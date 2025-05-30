@@ -2,8 +2,17 @@ package com.remotearmz.commandcenter.di
 
 import android.content.Context
 import androidx.room.Room
+import com.remotearmz.commandcenter.data.dao.ActivityLogDao
 import com.remotearmz.commandcenter.data.dao.ClientDao
+import com.remotearmz.commandcenter.data.dao.LeadDao
+import com.remotearmz.commandcenter.data.dao.OutreachActivityDao
+import com.remotearmz.commandcenter.data.dao.TargetDao
 import com.remotearmz.commandcenter.data.database.RemoteArmzDatabase
+import com.remotearmz.commandcenter.data.repository.ActivityLogRepository
+import com.remotearmz.commandcenter.data.repository.ClientRepository
+import com.remotearmz.commandcenter.data.repository.LeadRepository
+import com.remotearmz.commandcenter.data.repository.OutreachActivityRepository
+import com.remotearmz.commandcenter.data.repository.TargetRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

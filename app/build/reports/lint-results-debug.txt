@@ -1,0 +1,282 @@
+C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\java\com\remotearmz\commandcenter\notification\NotificationHelper.kt:108: Error: Missing permissions required by NotificationManagerCompat.notify: android.permission.POST_NOTIFICATIONS [MissingPermission]
+        with(NotificationManagerCompat.from(context)) {
+        ^
+C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\java\com\remotearmz\commandcenter\notification\NotificationHelper.kt:135: Error: Missing permissions required by NotificationManagerCompat.notify: android.permission.POST_NOTIFICATIONS [MissingPermission]
+        with(NotificationManagerCompat.from(context)) {
+        ^
+C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\java\com\remotearmz\commandcenter\notification\NotificationHelper.kt:162: Error: Missing permissions required by NotificationManagerCompat.notify: android.permission.POST_NOTIFICATIONS [MissingPermission]
+        with(NotificationManagerCompat.from(context)) {
+        ^
+C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\java\com\remotearmz\commandcenter\notification\NotificationHelper.kt:188: Error: Missing permissions required by NotificationManagerCompat.notify: android.permission.POST_NOTIFICATIONS [MissingPermission]
+        with(NotificationManagerCompat.from(context)) {
+        ^
+C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\java\com\remotearmz\commandcenter\notification\NotificationHelper.kt:212: Error: Missing permissions required by NotificationManagerCompat.notify: android.permission.POST_NOTIFICATIONS [MissingPermission]
+        with(NotificationManagerCompat.from(context)) {
+        ^
+C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\java\com\remotearmz\commandcenter\notification\NotificationHelper.kt:238: Error: Missing permissions required by NotificationManagerCompat.notify: android.permission.POST_NOTIFICATIONS [MissingPermission]
+        with(NotificationManagerCompat.from(context)) {
+        ^
+C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\java\com\remotearmz\commandcenter\notification\NotificationHelper.kt:274: Error: Missing permissions required by NotificationManagerCompat.notify: android.permission.POST_NOTIFICATIONS [MissingPermission]
+        with(NotificationManagerCompat.from(context)) {
+        ^
+
+   Explanation for issues of type "MissingPermission":
+   This check scans through your code and libraries and looks at the APIs
+   being used, and checks this against the set of permissions required to
+   access those APIs. If the code using those APIs is called at runtime, then
+   the program will crash.
+
+   Furthermore, for permissions that are revocable (with targetSdkVersion 23),
+   client code must also be prepared to handle the calls throwing an exception
+   if the user rejects the request for permission at runtime.
+
+C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\java\com\remotearmz\commandcenter\util\DateCountdownUtil.kt:28: Error: Call requires API level 34 (current min is 26): java.time.LocalDate#ofInstant [NewApi]
+        val targetDate = LocalDate.ofInstant(
+                                   ~~~~~~~~~
+C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\java\com\remotearmz\commandcenter\util\DateCountdownUtil.kt:41: Error: Call requires API level 34 (current min is 26): java.time.LocalDate#ofInstant [NewApi]
+        val pastDate = LocalDate.ofInstant(
+                                 ~~~~~~~~~
+
+   Explanation for issues of type "NewApi":
+   This check scans through all the Android API calls in the application and
+   warns about any calls that are not available on all versions targeted by
+   this application (according to its minimum SDK attribute in the manifest).
+
+   If you really want to use this API and don't need to support older devices
+   just set the minSdkVersion in your build.gradle or AndroidManifest.xml
+   files.
+
+   If your code is deliberately accessing newer APIs, and you have ensured
+   (e.g. with conditional execution) that this code will only ever be called
+   on a supported platform, then you can annotate your class or method with
+   the @TargetApi annotation specifying the local minimum SDK to apply, such
+   as @TargetApi(11), such that this check considers 11 rather than your
+   manifest file's minimum SDK as the required API level.
+
+   If you are deliberately setting android: attributes in style definitions,
+   make sure you place this in a values-vNN folder in order to avoid running
+   into runtime conflicts on certain devices where manufacturers have added
+   custom attributes whose ids conflict with the new ones on later platforms.
+
+   Similarly, you can use tools:targetApi="11" in an XML file to indicate that
+   the element will only be inflated in an adequate context.
+
+C:\Users\Ashish\scratch1\RemoteArmz\app\build.gradle:61: Warning: Not targeting the latest versions of Android; compatibility modes apply. Consider testing and updating this version. Consult the android.os.Build.VERSION_CODES javadoc for details. [OldTargetApi]
+        targetSdk 34
+        ~~~~~~~~~~~~
+
+   Explanation for issues of type "OldTargetApi":
+   When your application runs on a version of Android that is more recent than
+   your targetSdkVersion specifies that it has been tested with, various
+   compatibility modes kick in. This ensures that your application continues
+   to work, but it may look out of place. For example, if the targetSdkVersion
+   is less than 14, your app may get an option button in the UI.
+
+   To fix this issue, set the targetSdkVersion to the highest available value.
+   Then test your app to make sure everything works correctly. You may want to
+   consult the compatibility notes to see what changes apply to each version
+   you are adding support for:
+   https://developer.android.com/reference/android/os/Build.VERSION_CODES.html
+   as well as follow this guide:
+   https://developer.android.com/distribute/best-practices/develop/target-sdk.
+   html
+
+   https://developer.android.com/distribute/best-practices/develop/target-sdk.html
+
+C:\Users\Ashish\scratch1\RemoteArmz\app\build.gradle:121: Warning: A newer version of androidx.compose:compose-bom than 2023.01.00 is available: 2025.05.01 [GradleDependency]
+    implementation platform('androidx.compose:compose-bom:2023.01.00')
+                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+C:\Users\Ashish\scratch1\RemoteArmz\app\build.gradle:124: Warning: A newer version of androidx.activity:activity-compose than 1.7.2 is available: 1.10.1 [GradleDependency]
+    implementation 'androidx.activity:activity-compose:1.7.2'
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+C:\Users\Ashish\scratch1\RemoteArmz\app\build.gradle:125: Warning: A newer version of androidx.navigation:navigation-compose than 2.7.0 is available: 2.9.0 [GradleDependency]
+    implementation 'androidx.navigation:navigation-compose:2.7.0'
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+C:\Users\Ashish\scratch1\RemoteArmz\app\build.gradle:126: Warning: A newer version of androidx.lifecycle:lifecycle-viewmodel-compose than 2.6.1 is available: 2.9.0 [GradleDependency]
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1'
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+C:\Users\Ashish\scratch1\RemoteArmz\app\build.gradle:127: Warning: A newer version of androidx.core:core-ktx than 1.10.1 is available: 1.16.0 [GradleDependency]
+    implementation 'androidx.core:core-ktx:1.10.1'
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+C:\Users\Ashish\scratch1\RemoteArmz\app\build.gradle:133: Warning: A newer version of androidx.compose.material:material than 1.4.3 is available: 1.8.2 [GradleDependency]
+    implementation 'androidx.compose.material:material:1.4.3'
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+C:\Users\Ashish\scratch1\RemoteArmz\app\build.gradle:134: Warning: A newer version of androidx.compose.material3:material3-window-size-class than 1.1.2 is available: 1.3.2 [GradleDependency]
+    implementation 'androidx.compose.material3:material3-window-size-class:1.1.2'
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+C:\Users\Ashish\scratch1\RemoteArmz\app\build.gradle:141: Warning: A newer version of androidx.datastore:datastore-preferences than 1.0.0 is available: 1.1.7 [GradleDependency]
+    implementation 'androidx.datastore:datastore-preferences:1.0.0'
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+C:\Users\Ashish\scratch1\RemoteArmz\app\build.gradle:144: Warning: A newer version of androidx.documentfile:documentfile than 1.0.1 is available: 1.1.0 [GradleDependency]
+    implementation 'androidx.documentfile:documentfile:1.0.1'
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+C:\Users\Ashish\scratch1\RemoteArmz\app\build.gradle:147: Warning: A newer version of com.google.dagger:hilt-android than 2.44 is available: 2.51 [GradleDependency]
+    implementation "com.google.dagger:hilt-android:2.44"
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+C:\Users\Ashish\scratch1\RemoteArmz\app\build.gradle:148: Warning: A newer version of com.google.dagger:hilt-android-compiler than 2.44 is available: 2.51 [GradleDependency]
+    kapt "com.google.dagger:hilt-android-compiler:2.44"
+         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+C:\Users\Ashish\scratch1\RemoteArmz\app\build.gradle:149: Warning: A newer version of androidx.hilt:hilt-navigation-compose than 1.0.0 is available: 1.2.0 [GradleDependency]
+    implementation 'androidx.hilt:hilt-navigation-compose:1.0.0'
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+C:\Users\Ashish\scratch1\RemoteArmz\app\build.gradle:152: Warning: A newer version of androidx.room:room-runtime than 2.5.2 is available: 2.7.1 [GradleDependency]
+    implementation 'androidx.room:room-runtime:2.5.2'
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+C:\Users\Ashish\scratch1\RemoteArmz\app\build.gradle:153: Warning: A newer version of androidx.room:room-ktx than 2.5.2 is available: 2.7.1 [GradleDependency]
+    implementation 'androidx.room:room-ktx:2.5.2'
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+C:\Users\Ashish\scratch1\RemoteArmz\app\build.gradle:154: Warning: A newer version of androidx.room:room-compiler than 2.5.2 is available: 2.7.1 [GradleDependency]
+    kapt 'androidx.room:room-compiler:2.5.2'
+         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+C:\Users\Ashish\scratch1\RemoteArmz\app\build.gradle:157: Warning: A newer version of com.google.android.gms:play-services-auth than 20.7.0 is available: 21.3.0 [GradleDependency]
+    implementation 'com.google.android.gms:play-services-auth:20.7.0'
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+C:\Users\Ashish\scratch1\RemoteArmz\app\build.gradle:159: Warning: A newer version of com.google.api-client:google-api-client-android than 1.23.0 is available: 2.3.0 [GradleDependency]
+    implementation 'com.google.api-client:google-api-client-android:1.23.0'
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+C:\Users\Ashish\scratch1\RemoteArmz\app\build.gradle:166: Warning: A newer version of androidx.work:work-runtime-ktx than 2.9.0 is available: 2.10.1 [GradleDependency]
+    implementation 'androidx.work:work-runtime-ktx:2.9.0'
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+C:\Users\Ashish\scratch1\RemoteArmz\app\build.gradle:167: Warning: A newer version of androidx.hilt:hilt-work than 1.1.0 is available: 1.2.0 [GradleDependency]
+    implementation 'androidx.hilt:hilt-work:1.1.0'
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+C:\Users\Ashish\scratch1\RemoteArmz\app\build.gradle:168: Warning: A newer version of androidx.hilt:hilt-compiler than 1.1.0 is available: 1.2.0 [GradleDependency]
+    kapt 'androidx.hilt:hilt-compiler:1.1.0'
+         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "GradleDependency":
+   This detector looks for usages of libraries where the version you are using
+   is not the current stable release. Using older versions is fine, and there
+   are cases where you deliberately want to stick with an older version.
+   However, you may simply not be aware that a more recent version is
+   available, and that is what this lint check helps find.
+
+C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\java\com\remotearmz\commandcenter\ui\components\KPICard.kt:34: Warning: Modifier parameter should be the first optional parameter [ModifierParameter from androidx.compose.ui]
+    modifier: Modifier = Modifier
+    ~~~~~~~~
+
+   Explanation for issues of type "ModifierParameter":
+   The first (or only) Modifier parameter in a Composable function should
+   follow the following rules:
+   - Be named modifier
+   - Have a type of Modifier
+   - Either have no default value, or have a default value of Modifier
+   - If optional, be the first optional parameter in the parameter list
+
+   Vendor: Jetpack Compose
+   Identifier: androidx.compose.ui
+   Feedback: https://issuetracker.google.com/issues/new?component=612128
+
+C:\Users\Ashish\.gradle\caches\modules-2\files-2.1\com.google.http-client\google-http-client\1.43.3\a758b82e55a2f5f681e289c5ed384d3dbda6f3cd\google-http-client-1.43.3.jar: Warning: checkClientTrusted is empty, which could cause insecure network traffic due to trusting arbitrary TLS/SSL certificates presented by peers [TrustAllX509TrustManager]
+C:\Users\Ashish\.gradle\caches\modules-2\files-2.1\com.google.http-client\google-http-client\1.43.3\a758b82e55a2f5f681e289c5ed384d3dbda6f3cd\google-http-client-1.43.3.jar: Warning: checkServerTrusted is empty, which could cause insecure network traffic due to trusting arbitrary TLS/SSL certificates presented by peers [TrustAllX509TrustManager]
+
+   Explanation for issues of type "TrustAllX509TrustManager":
+   This check looks for X509TrustManager implementations whose
+   checkServerTrusted or checkClientTrusted methods do nothing (thus trusting
+   any certificate chain) which could result in insecure network traffic
+   caused by trusting arbitrary TLS/SSL certificates presented by peers.
+
+C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\java\com\remotearmz\commandcenter\notification\NotificationHelper.kt:43: Warning: Unnecessary; SDK_INT is always >= 26 [ObsoleteSdkInt]
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "ObsoleteSdkInt":
+   This check flags version checks that are not necessary, because the
+   minSdkVersion (or surrounding known API level) is already at least as high
+   as the version checked for.
+
+   Similarly, it also looks for resources in -vNN folders, such as values-v14
+   where the version qualifier is less than or equal to the minSdkVersion,
+   where the contents should be merged into the best folder.
+
+C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\res\drawable\ic_light_mode.xml:9: Warning: Very long vector path (973 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector. [VectorPath]
+        android:pathData="M12,7c-2.76,0 -5,2.24 -5,5s2.24,5 5,5s5,-2.24 5,-5S14.76,7 12,7L12,7zM2,13l2,0c0.55,0 1,-0.45 1,-1s-0.45,-1 -1,-1l-2,0c-0.55,0 -1,0.45 -1,1S1.45,13 2,13zM20,13l2,0c0.55,0 1,-0.45 1,-1s-0.45,-1 -1,-1l-2,0c-0.55,0 -1,0.45 -1,1S19.45,13 20,13zM11,2v2c0,0.55 0.45,1 1,1s1,-0.45 1,-1V2c0,-0.55 -0.45,-1 -1,-1S11,1.45 11,2zM11,20v2c0,0.55 0.45,1 1,1s1,-0.45 1,-1v-2c0,-0.55 -0.45,-1 -1,-1S11,19.45 11,20zM5.99,4.58c-0.39,-0.39 -1.03,-0.39 -1.41,0c-0.39,0.39 -0.39,1.03 0,1.41l1.06,1.06c0.39,0.39 1.03,0.39 1.41,0s0.39,-1.03 0,-1.41L5.99,4.58zM18.36,16.95c-0.39,-0.39 -1.03,-0.39 -1.41,0c-0.39,0.39 -0.39,1.03 0,1.41l1.06,1.06c0.39,0.39 1.03,0.39 1.41,0c0.39,-0.39 0.39,-1.03 0,-1.41L18.36,16.95zM19.42,5.99c0.39,-0.39 0.39,-1.03 0,-1.41c-0.39,-0.39 -1.03,-0.39 -1.41,0l-1.06,1.06c-0.39,0.39 -0.39,1.03 0,1.41s1.03,0.39 1.41,0L19.42,5.99zM7.05,18.36c0.39,-0.39 0.39,-1.03 0,-1.41c-0.39,-0.39 -1.03,-0.39 -1.41,0l-1.06,1.06c-0.39,0.39 -0.39,1.03 0,1.41s1.03,0.39 1.41,0L7.05,18.36z"/>
+                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\res\drawable\ic_settings.xml:9: Warning: Very long vector path (904 characters), which is bad for performance. Considering reducing precision, removing minor details or rasterizing vector. [VectorPath]
+        android:pathData="M19.14,12.94c0.04,-0.3 0.06,-0.61 0.06,-0.94c0,-0.32 -0.02,-0.64 -0.07,-0.94l2.03,-1.58c0.18,-0.14 0.23,-0.41 0.12,-0.61l-1.92,-3.32c-0.12,-0.22 -0.37,-0.29 -0.59,-0.22l-2.39,0.96c-0.5,-0.38 -1.03,-0.7 -1.62,-0.94L14.4,2.81c-0.04,-0.24 -0.24,-0.41 -0.48,-0.41h-3.84c-0.24,0 -0.43,0.17 -0.47,0.41L9.25,5.35C8.66,5.59 8.12,5.92 7.63,6.29L5.24,5.33c-0.22,-0.08 -0.47,0 -0.59,0.22L2.74,8.87C2.62,9.08 2.66,9.34 2.86,9.48l2.03,1.58C4.84,11.36 4.8,11.69 4.8,12s0.02,0.64 0.07,0.94l-2.03,1.58c-0.18,0.14 -0.23,0.41 -0.12,0.61l1.92,3.32c0.12,0.22 0.37,0.29 0.59,0.22l2.39,-0.96c0.5,0.38 1.03,0.7 1.62,0.94l0.36,2.54c0.05,0.24 0.24,0.41 0.48,0.41h3.84c0.24,0 0.44,-0.17 0.47,-0.41l0.36,-2.54c0.59,-0.24 1.13,-0.56 1.62,-0.94l2.39,0.96c0.22,0.08 0.47,0 0.59,-0.22l1.92,-3.32c0.12,-0.22 0.07,-0.47 -0.12,-0.61L19.14,12.94zM12,15.6c-1.98,0 -3.6,-1.62 -3.6,-3.6s1.62,-3.6 3.6,-3.6s3.6,1.62 3.6,3.6S13.98,15.6 12,15.6z"/>
+                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "VectorPath":
+   Using long vector paths is bad for performance. There are several ways to
+   make the pathData shorter:
+   * Using less precision
+   * Removing some minor details
+   * Using the Android Studio vector conversion tool
+   * Rasterizing the image (converting to PNG)
+
+C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\res\values\colors.xml:3: Warning: The resource R.color.primary appears to be unused [UnusedResources]
+    <color name="primary">#1976D2</color>
+           ~~~~~~~~~~~~~~
+C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\res\values\colors.xml:4: Warning: The resource R.color.secondary appears to be unused [UnusedResources]
+    <color name="secondary">#388E3C</color>
+           ~~~~~~~~~~~~~~~~
+C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\res\values\colors.xml:5: Warning: The resource R.color.background appears to be unused [UnusedResources]
+    <color name="background">#FFFFFF</color>
+           ~~~~~~~~~~~~~~~~~
+C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\res\values\strings.xml:4: Warning: The resource R.string.dashboard appears to be unused [UnusedResources]
+    <string name="dashboard">Dashboard</string>
+            ~~~~~~~~~~~~~~~~
+C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\res\values\strings.xml:5: Warning: The resource R.string.clients appears to be unused [UnusedResources]
+    <string name="clients">Clients</string>
+            ~~~~~~~~~~~~~~
+C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\res\values\strings.xml:6: Warning: The resource R.string.leads appears to be unused [UnusedResources]
+    <string name="leads">Leads</string>
+            ~~~~~~~~~~~~
+C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\res\values\strings.xml:7: Warning: The resource R.string.targets appears to be unused [UnusedResources]
+    <string name="targets">Targets</string>
+            ~~~~~~~~~~~~~~
+C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\res\values\strings.xml:8: Warning: The resource R.string.outreach appears to be unused [UnusedResources]
+    <string name="outreach">Outreach</string>
+            ~~~~~~~~~~~~~~~
+C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\res\values\strings.xml:9: Warning: The resource R.string.toggle_theme appears to be unused [UnusedResources]
+    <string name="toggle_theme">Toggle Theme</string>
+            ~~~~~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "UnusedResources":
+   Unused resources make applications larger and slow down builds.
+
+
+   The unused resource check can ignore tests. If you want to include
+   resources that are only referenced from tests, consider packaging them in a
+   test source set instead.
+
+   You can include test sources in the unused resource check by setting the
+   system property lint.unused-resources.include-tests =true, and to exclude
+   them (usually for performance reasons), use
+   lint.unused-resources.exclude-tests =true.
+   ,
+
+C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\res\mipmap\ic_launcher.xml:2: Warning: The application adaptive icon is missing a monochrome tag [MonochromeLauncherIcon]
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+^
+C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\res\mipmap\ic_launcher_round.xml:2: Warning: The application adaptive roundIcon is missing a monochrome tag [MonochromeLauncherIcon]
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+^
+
+   Explanation for issues of type "MonochromeLauncherIcon":
+   If android:roundIcon and android:icon are both in your manifest, you must
+   either remove the reference to android:roundIcon if it is not needed; or,
+   supply the monochrome icon in the drawable defined by the android:roundIcon
+   and android:icon attribute.
+
+   For example, if android:roundIcon and android:icon are both in the
+   manifest, a launcher might choose to use android:roundIcon over
+   android:icon to display the adaptive app icon. Therefore, your themed
+   application iconwill not show if your monochrome attribute is not also
+   specified in android:roundIcon.
+
+C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\java\com\remotearmz\commandcenter\util\DateFormatter.kt:8: Warning: Assigning Locale.getDefault() to a final static field is suspicious; this code will not work correctly if the user changes locale while the app is running [ConstantLocale]
+    private val dateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
+                                                              ~~~~~~~~~~~~~~~~~~~
+C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\java\com\remotearmz\commandcenter\util\DateFormatter.kt:9: Warning: Assigning Locale.getDefault() to a final static field is suspicious; this code will not work correctly if the user changes locale while the app is running [ConstantLocale]
+    private val timeFormat = SimpleDateFormat("hh:mm a", Locale.getDefault())
+                                                         ~~~~~~~~~~~~~~~~~~~
+C:\Users\Ashish\scratch1\RemoteArmz\app\src\main\java\com\remotearmz\commandcenter\util\DateFormatter.kt:10: Warning: Assigning Locale.getDefault() to a final static field is suspicious; this code will not work correctly if the user changes locale while the app is running [ConstantLocale]
+    private val dateTimeFormat = SimpleDateFormat("MMM dd, yyyy hh:mm a", Locale.getDefault())
+                                                                          ~~~~~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "ConstantLocale":
+   Assigning Locale.getDefault() to a constant is suspicious, because the
+   locale can change while the app is running.
+
+9 errors, 41 warnings

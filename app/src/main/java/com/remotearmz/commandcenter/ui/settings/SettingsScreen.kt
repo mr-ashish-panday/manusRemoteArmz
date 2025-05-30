@@ -166,8 +166,9 @@ fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel()) {
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             Icon(Icons.Default.Backup, contentDescription = null)
+                            val isBackupScheduled by viewModel.isBackupScheduled.collectAsState()
                             Text(
-                                text = if (viewModel.isBackupScheduled) "Disable Daily Backup" else "Enable Daily Backup",
+                                text = if (isBackupScheduled) "Disable Daily Backup" else "Enable Daily Backup",
                                 modifier = Modifier.padding(start = 8.dp)
                             )
                         }

@@ -71,8 +71,8 @@ class TargetViewModel @Inject constructor(
         val completionRate = if (totalCount > 0) (completedCount.toFloat() / totalCount) * 100 else 0f
         
         val revenueTargets = allTargets.filter { it.category == TargetCategory.REVENUE }
-        val clientTargets = allTargets.filter { it.category == TargetCategory.CLIENTS }
-        val leadTargets = allTargets.filter { it.category == TargetCategory.LEADS }
+        val clientTargets = allTargets.filter { it.category == TargetCategory.NEW_CLIENTS }
+        val leadTargets = allTargets.filter { it.category == TargetCategory.LEADS_GENERATED }
         
         val overallProgress = if (allTargets.isNotEmpty()) {
             allTargets.sumOf { it.currentValue } / allTargets.sumOf { it.targetValue } * 100

@@ -414,7 +414,7 @@ fun TargetItem(
                 Spacer(modifier = Modifier.height(4.dp))
                 
                 LinearProgressIndicator(
-                    progress = { target.progressPercentage / 100f },
+                    progress = target.progressPercentage / 100f,
                     modifier = Modifier.fillMaxWidth()
                 )
                 

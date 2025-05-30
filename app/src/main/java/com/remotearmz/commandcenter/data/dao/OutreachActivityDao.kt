@@ -7,9 +7,11 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.remotearmz.commandcenter.data.model.ContactType
+import com.remotearmz.commandcenter.data.model.OutcomeCount
 import com.remotearmz.commandcenter.data.model.OutreachActivity
 import com.remotearmz.commandcenter.data.model.OutreachOutcome
 import com.remotearmz.commandcenter.data.model.OutreachType
+import com.remotearmz.commandcenter.data.model.TypeCount
 import kotlinx.coroutines.flow.Flow
 
 @Dao

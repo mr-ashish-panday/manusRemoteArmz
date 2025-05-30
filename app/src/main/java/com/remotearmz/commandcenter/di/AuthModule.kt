@@ -46,27 +46,26 @@ object AuthModule {
     @Provides
     @Singleton
     fun provideGoogleAuthManager(
-        @ApplicationContext context: Context,
-        googleSignInClient: GoogleSignInClient
+        @ApplicationContext context: Context
     ): GoogleAuthManager {
-        return GoogleAuthManager(context, googleSignInClient)
+        return GoogleAuthManager(context)
     }
     
     @Provides
     @Singleton
     fun provideDriveService(
-        @ApplicationContext context: Context,
-        googleAuthManager: GoogleAuthManager
+        @ApplicationContext context: Context
     ): DriveService {
-        return DriveService(context, googleAuthManager)
+        return DriveService(context)
     }
     
     @Provides
     @Singleton
     fun provideBackupManager(
         @ApplicationContext context: Context,
-        driveService: DriveService
+        driveService: DriveService,
+        notificationHelper: com.remotearmz.commandcenter.notification.NotificationHelper
     ): BackupManager {
-        return BackupManager(context, driveService)
+        return BackupManager(context, driveService, notificationHelper)
     }
 }

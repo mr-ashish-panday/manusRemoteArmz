@@ -6,26 +6,6 @@ import com.remotearmz.commandcenter.data.model.ContactType
 import com.remotearmz.commandcenter.data.model.OutreachActivity
 import com.remotearmz.commandcenter.data.model.OutreachOutcome
 import com.remotearmz.commandcenter.data.model.OutreachType
-import com.remotearmz.commandcenter.data.repository.ClientRepository
-import com.remotearmz.commandcenter.data.repository.LeadRepository
-import com.remotearmz.commandcenter.data.repository.OutreachRepository
-import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
-import java.util.Calendar
-import javax.inject.Inject
-
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.remotearmz.commandcenter.data.model.ContactType
-import com.remotearmz.commandcenter.data.model.OutreachActivity
-import com.remotearmz.commandcenter.data.model.OutreachOutcome
-import com.remotearmz.commandcenter.data.model.OutreachType
 import com.remotearmz.commandcenter.data.repository.ActivityLogRepository
 import com.remotearmz.commandcenter.data.repository.ClientRepository
 import com.remotearmz.commandcenter.data.repository.LeadRepository
@@ -38,6 +18,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import java.util.Calendar
 import java.util.UUID
 import javax.inject.Inject
 
@@ -95,12 +76,35 @@ class OutreachViewModel @Inject constructor(
         initialValue = emptyList()
     )
     
+    // Use StateFlow for type counts that will be updated from a coroutine
+    private val _callCount = MutableStateFlow(0)
+    private val _emailCount = MutableStateFlow(0)
+    private val _meetingCount = MutableStateFlow(0)
+    
+    init {
+        // Load type counts when ViewModel is created
+        loadTypeCounts()
+    }
+    
+    private fun loadTypeCounts() {
+        viewModelScope.launch {
+            try {
+                val typeCounts = outreachActivityRepository.getOutreachCountsByType()
+                _callCount.value = typeCounts.find { it.type == OutreachType.CALL }?.count ?: 0
+                _emailCount.value = typeCounts.find { it.type == OutreachType.EMAIL }?.count ?: 0
+                _meetingCount.value = typeCounts.find { it.type == OutreachType.MEETING }?.count ?: 0
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(error = "Failed to load type counts: ${e.message}")
+            }
+        }
+    }
+
     val outreachStats = combine(
         outreachActivityRepository.getTotalOutreachCount(),
         outreachActivityRepository.getSuccessfulOutreachCount(),
-        outreachActivityRepository.getOutreachCountByType(OutreachType.CALL),
-        outreachActivityRepository.getOutreachCountByType(OutreachType.EMAIL),
-        outreachActivityRepository.getOutreachCountByType(OutreachType.MEETING)
+        _callCount,
+        _emailCount,
+        _meetingCount
     ) { total, successful, calls, emails, meetings ->
         val successRate = if (total > 0) (successful.toFloat() / total) * 100 else 0f
         

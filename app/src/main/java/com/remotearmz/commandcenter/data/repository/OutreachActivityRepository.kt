@@ -48,11 +48,8 @@ class OutreachActivityRepository @Inject constructor(
         outreachActivityDao.getTotalOutreachCount()
     
     fun getOutreachSuccessRate(): Flow<Float> {
-        return outreachActivityDao.getSuccessfulOutreachCount().map { successCount ->
-            outreachActivityDao.getTotalOutreachCount().map { totalCount ->
-                if (totalCount > 0) (successCount.toFloat() / totalCount) * 100 else 0f
-            }
-        }.map { it.first() }
+        // Use a direct query from the DAO that calculates this in one step
+        return outreachActivityDao.getOutreachSuccessRate()
     }
     
     suspend fun getOutreachActivityById(id: String): OutreachActivity? = 

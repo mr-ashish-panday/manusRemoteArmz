@@ -1,0 +1,32 @@
+R_DEF: Internal format may change without notice
+local
+color background
+color ic_launcher_background
+color primary
+color secondary
+drawable ic_clients
+drawable ic_dark_mode
+drawable ic_dashboard
+drawable ic_launcher_foreground
+drawable ic_leads
+drawable ic_light_mode
+drawable ic_outreach
+drawable ic_settings
+drawable ic_targets
+mipmap ic_launcher
+mipmap ic_launcher_round
+string app_name
+string clients
+string dashboard
+string default_web_client_id
+string gcm_defaultSenderId
+string google_api_key
+string google_app_id
+string google_crash_reporting_api_key
+string google_storage_bucket
+string leads
+string outreach
+string project_id
+string targets
+string toggle_theme
+style Theme.RemoteArmz

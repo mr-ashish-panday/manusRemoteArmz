@@ -149,7 +149,12 @@ fun ClientsScreen(viewModel: ClientsViewModel = hiltViewModel()) {
                 } else {
                     // Client list
                     LazyColumn(
-                        contentPadding = PaddingValues(16.dp).calculateBottomPadding() + paddingValues,
+                        contentPadding = PaddingValues(
+                            start = 16.dp,
+                            top = 16.dp,
+                            end = 16.dp,
+                            bottom = 16.dp + paddingValues.calculateBottomPadding()
+                        ),
                         modifier = Modifier.fillMaxSize()
                     ) {
                         items(clients, key = { it.id }) { client ->
@@ -279,9 +284,9 @@ class FakeClientRepository : com.remotearmz.commandcenter.data.repository.Client
         override suspend fun insertClient(client: Client): Long = 0
         override suspend fun updateClient(client: Client) {}
         override suspend fun deleteClient(client: Client) {}
-        override fun getAllClients() = kotlinx.coroutines.flow.flowOf(emptyList())
+        override fun getAllClients() = kotlinx.coroutines.flow.flowOf<List<Client>>(emptyList())
         override suspend fun getClientById(clientId: String): Client? = null
-        override fun searchClients(query: String) = kotlinx.coroutines.flow.flowOf(emptyList())
-        override fun getClientsByStatus(status: ClientStatus) = kotlinx.coroutines.flow.flowOf(emptyList())
+        override fun searchClients(query: String) = kotlinx.coroutines.flow.flowOf<List<Client>>(emptyList())
+        override fun getClientsByStatus(status: ClientStatus) = kotlinx.coroutines.flow.flowOf<List<Client>>(emptyList())
     }
 )
