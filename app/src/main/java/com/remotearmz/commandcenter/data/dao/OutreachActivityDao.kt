@@ -38,7 +38,7 @@ interface OutreachActivityDao {
     @Query("SELECT * FROM outreach_activities WHERE outcome = :outcome ORDER BY createdAt DESC")
     fun getOutreachActivitiesByOutcome(outcome: OutreachOutcome): Flow<List<OutreachActivity>>
     
-    @Query("SELECT * FROM outreach_activities WHERE followUpRequired = 1 AND (followUpDate IS NULL OR followUpDate <= :currentTime) ORDER BY followUpDate ASC NULLS LAST")
+    @Query("SELECT * FROM outreach_activities WHERE followUpRequired = 1 AND (followUpDate IS NULL OR followUpDate <= :currentTime) ORDER BY CASE WHEN followUpDate IS NULL THEN 1 ELSE 0 END, followUpDate ASC")
     fun getOutreachActivitiesRequiringFollowUp(currentTime: Long): Flow<List<OutreachActivity>>
     
     @Query("SELECT * FROM outreach_activities WHERE followUpRequired = 1 AND followUpDate BETWEEN :startTime AND :endTime ORDER BY followUpDate ASC")
@@ -75,10 +75,10 @@ interface OutreachActivityDao {
     fun getOutreachSuccessRate(): Flow<Float>
     
     @Query("SELECT type, COUNT(*) as count FROM outreach_activities GROUP BY type")
-    fun getOutreachCountByType(): Flow<Map<OutreachType, Int>>
+    suspend fun getOutreachCountByType(): List<TypeCount>
     
     @Query("SELECT outcome, COUNT(*) as count FROM outreach_activities GROUP BY outcome")
-    fun getOutreachCountByOutcome(): Flow<Map<OutreachOutcome, Int>>
+    suspend fun getOutreachCountByOutcome(): List<OutcomeCount>
     
     @Query("SELECT MAX(createdAt) FROM outreach_activities WHERE contactId = :contactId AND contactType = :contactType")
     suspend fun getLastContactTime(contactId: String, contactType: ContactType): Long?

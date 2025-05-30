@@ -147,6 +147,12 @@ class OutreachViewModel @Inject constructor(
             _uiState.value = _uiState.value.copy(isLoading = true)
             try {
                 // Activities are loaded via the StateFlow
+                // Load type and outcome counts using the new methods
+                val typeCountsList = outreachActivityRepository.getOutreachCountsByType()
+                val outcomeCountsList = outreachActivityRepository.getOutreachCountsByOutcome()
+                
+                // Process counts as needed for your UI (can be used in other UI components)
+                
                 _uiState.value = _uiState.value.copy(isLoading = false, error = null)
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(isLoading = false, error = e.message)
