@@ -106,6 +106,8 @@ class NotificationHelper @Inject constructor(
             .setAutoCancel(true)
         
         with(NotificationManagerCompat.from(context)) {
+            // TODO: Check for POST_NOTIFICATIONS permission on Android 13+ before calling notify()
+            // if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && !areNotificationsEnabled()) { /* Handle permission needed */ return }
             notify(NOTIFICATION_ID_FOLLOW_UP + outreachActivity.id.hashCode(), builder.build())
         }
     }
@@ -133,6 +135,8 @@ class NotificationHelper @Inject constructor(
             .setAutoCancel(true)
         
         with(NotificationManagerCompat.from(context)) {
+            // TODO: Check for POST_NOTIFICATIONS permission on Android 13+ before calling notify()
+            // if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && !areNotificationsEnabled()) { /* Handle permission needed */ return }
             notify(NOTIFICATION_ID_TARGET_DEADLINE + target.id.hashCode(), builder.build())
         }
     }
@@ -160,6 +164,8 @@ class NotificationHelper @Inject constructor(
             .setAutoCancel(true)
         
         with(NotificationManagerCompat.from(context)) {
+            // TODO: Check for POST_NOTIFICATIONS permission on Android 13+ before calling notify()
+            // if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && !areNotificationsEnabled()) { /* Handle permission needed */ return }
             notify(NOTIFICATION_ID_TARGET_COMPLETED + target.id.hashCode(), builder.build())
         }
     }
@@ -186,6 +192,8 @@ class NotificationHelper @Inject constructor(
             .setAutoCancel(true)
         
         with(NotificationManagerCompat.from(context)) {
+            // TODO: Check for POST_NOTIFICATIONS permission on Android 13+ before calling notify()
+            // if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && !areNotificationsEnabled()) { /* Handle permission needed */ return }
             notify(NOTIFICATION_ID_BACKUP_COMPLETED, builder.build())
         }
     }
@@ -210,6 +218,8 @@ class NotificationHelper @Inject constructor(
             .setAutoCancel(true)
         
         with(NotificationManagerCompat.from(context)) {
+            // TODO: Check for POST_NOTIFICATIONS permission on Android 13+ before calling notify()
+            // if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && !areNotificationsEnabled()) { /* Handle permission needed */ return }
             notify(NOTIFICATION_ID_BACKUP_STARTED, builder.build())
         }
     }
@@ -236,6 +246,8 @@ class NotificationHelper @Inject constructor(
             .setAutoCancel(true)
         
         with(NotificationManagerCompat.from(context)) {
+            // TODO: Check for POST_NOTIFICATIONS permission on Android 13+ before calling notify()
+            // if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && !areNotificationsEnabled()) { /* Handle permission needed */ return }
             notify(NOTIFICATION_ID_BACKUP_SCHEDULED, builder.build())
         }
     }
@@ -272,6 +284,8 @@ class NotificationHelper @Inject constructor(
             .setAutoCancel(true)
         
         with(NotificationManagerCompat.from(context)) {
+            // TODO: Check for POST_NOTIFICATIONS permission on Android 13+ before calling notify()
+            // if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && !areNotificationsEnabled()) { /* Handle permission needed */ return }
             notify(NOTIFICATION_ID_WEEKLY_SUMMARY, builder.build())
         }
     }

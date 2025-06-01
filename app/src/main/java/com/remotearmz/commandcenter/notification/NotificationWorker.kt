@@ -4,9 +4,10 @@ import android.content.Context
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import com.remotearmz.commandcenter.data.model.OutreachOutcome
 import com.remotearmz.commandcenter.data.repository.ClientRepository
 import com.remotearmz.commandcenter.data.repository.LeadRepository
-import com.remotearmz.commandcenter.data.repository.OutreachRepository
+import com.remotearmz.commandcenter.data.repository.OutreachActivityRepository
 import com.remotearmz.commandcenter.data.repository.TargetRepository
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
@@ -18,35 +19,36 @@ import java.util.concurrent.TimeUnit
 class NotificationWorker @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted params: WorkerParameters,
-    private val outreachRepository: OutreachRepository,
+    private val outreachRepository: OutreachActivityRepository,
     private val clientRepository: ClientRepository,
     private val leadRepository: LeadRepository,
     private val targetRepository: TargetRepository,
     private val notificationHelper: NotificationHelper
 ) : CoroutineWorker(context, params) {
-    
+
     companion object {
         const val WORK_NAME = "notification_worker"
     }
-    
+
     override suspend fun doWork(): Result {
         try {
             // Check for follow-ups due today
             checkFollowUps()
-            
+
             // Check for target deadlines approaching
             checkTargetDeadlines()
-            
+
             // Check for weekly summary (on Monday)
             checkWeeklySummary()
-            
+
             return Result.success()
         } catch (e: Exception) {
             e.printStackTrace()
+            // Consider more specific error handling or logging
             return Result.retry()
         }
     }
-    
+
     private suspend fun checkFollowUps() {
         val currentTime = System.currentTimeMillis()
         val endOfDay = Calendar.getInstance().apply {
@@ -56,60 +58,59 @@ class NotificationWorker @AssistedInject constructor(
             set(Calendar.SECOND, 59)
             set(Calendar.MILLISECOND, 999)
         }.timeInMillis
-        
+
+        // Fetch follow-ups due between now and end of today
         val followUps = outreachRepository.getFollowUpsInRange(currentTime, endOfDay).first()
-        
+
         followUps.forEach { activity ->
-            val contactName = when (activity.contactType.name) {
-                "CLIENT" -> clientRepository.getClientById(activity.contactId)?.name ?: "Unknown"
-                "LEAD" -> leadRepository.getLeadById(activity.contactId)?.contactName ?: "Unknown"
-                else -> "Unknown"
+            // Fetch contact name based on type
+            val contactName = when (activity.contactType) {
+                com.remotearmz.commandcenter.data.model.ContactType.CLIENT ->
+                    clientRepository.getClientById(activity.contactId)?.name ?: "Unknown Client"
+                com.remotearmz.commandcenter.data.model.ContactType.LEAD ->
+                    leadRepository.getLeadById(activity.contactId)?.contactName ?: "Unknown Lead"
+                // else case might not be needed if ContactType enum only has CLIENT/LEAD
             }
-            
+
             notificationHelper.showFollowUpNotification(activity, contactName)
         }
     }
-    
+
     private suspend fun checkTargetDeadlines() {
         val currentTime = System.currentTimeMillis()
-        
+
         // Get targets with deadlines in the next 7 days
         val sevenDaysFromNow = currentTime + TimeUnit.DAYS.toMillis(7)
         val targets = targetRepository.getTargetsByDeadlineRange(currentTime, sevenDaysFromNow).first()
-        
+
         targets.forEach { target ->
             val daysRemaining = target.remainingDays
-            
+
             // Notify for targets with 7, 3, or 1 day remaining
             if (daysRemaining in listOf(7, 3, 1)) {
                 notificationHelper.showTargetDeadlineNotification(target, daysRemaining)
             }
         }
     }
-    
+
     private suspend fun checkWeeklySummary() {
         val calendar = Calendar.getInstance()
-        
+
         // Check if today is Monday (Calendar.MONDAY = 2)
         if (calendar.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY) {
             val clientCount = clientRepository.getAllClients().first().size
             val leadCount = leadRepository.getActiveLeadCount().first()
-            
+
             // Get overall target progress
+            // TODO: Consider adding a DAO query for overall average progress if performance becomes an issue
             val targets = targetRepository.getAllTargets().first()
             val targetProgress = if (targets.isNotEmpty()) {
                 targets.sumOf { it.progressPercentage.toDouble() } / targets.size
             } else 0.0
-            
-            // Get outreach success rate
-            val outreachActivities = outreachRepository.getAllOutreachActivities().first()
-            val successfulOutreach = outreachActivities.count { 
-                it.outcome.name == "SUCCESSFUL" || it.outcome.name == "INTERESTED" 
-            }
-            val outreachSuccessRate = if (outreachActivities.isNotEmpty()) {
-                successfulOutreach.toFloat() / outreachActivities.size * 100
-            } else 0f
-            
+
+            // Get outreach success rate using the dedicated repository/DAO method
+            val outreachSuccessRate = outreachRepository.getOutreachSuccessRate().first()
+
             notificationHelper.showWeeklySummaryNotification(
                 clientCount,
                 leadCount,
@@ -119,3 +120,4 @@ class NotificationWorker @AssistedInject constructor(
         }
     }
 }
+

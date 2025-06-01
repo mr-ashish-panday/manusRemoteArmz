@@ -35,7 +35,7 @@ import com.remotearmz.commandcenter.ui.components.CountdownCard
 import com.remotearmz.commandcenter.ui.components.DeadlineCountdown
 import com.remotearmz.commandcenter.ui.components.KpiCard
 import com.remotearmz.commandcenter.ui.theme.RemoteArmzTheme
-import com.remotearmz.commandcenter.util.CurrencyFormatter
+import com.remotearmz.commandcenter.util.CurrencyConverter
 import com.remotearmz.commandcenter.util.DateCountdownUtil
 
 @Composable
@@ -51,8 +51,8 @@ fun DashboardScreen() {
         var successRate by remember { mutableStateOf(72f) }
         
         val revenueNPR = revenue * 135.0 // Convert USD to NPR
-        val formattedRevenueNPR = CurrencyFormatter.formatNPR(revenueNPR)
-        val formattedRevenueUSD = CurrencyFormatter.formatUSD(revenue)
+        val formattedRevenueNPR = CurrencyConverter.formatNPR(revenueNPR)
+        val formattedRevenueUSD = CurrencyConverter.formatUSD(revenue)
         
         // Animate the target progress
         val animatedProgress by animateFloatAsState(

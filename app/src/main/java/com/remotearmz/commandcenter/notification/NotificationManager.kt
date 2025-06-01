@@ -48,9 +48,9 @@ class NotificationManager @Inject constructor(
      * Check for notifications immediately (for testing or manual refresh)
      */
     fun checkNotificationsNow() {
-        val notificationWorkRequest = PeriodicWorkRequestBuilder<NotificationWorker>(
-            1, TimeUnit.DAYS
-        ).build()
+        // Use OneTimeWorkRequestBuilder for an immediate check
+        val notificationWorkRequest = OneTimeWorkRequestBuilder<NotificationWorker>()
+            .build()
         
         WorkManager.getInstance(context).enqueue(notificationWorkRequest)
     }

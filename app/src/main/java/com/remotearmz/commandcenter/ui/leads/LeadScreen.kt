@@ -64,7 +64,7 @@ import com.remotearmz.commandcenter.data.model.Lead
 import com.remotearmz.commandcenter.data.model.LeadStatus
 import com.remotearmz.commandcenter.ui.components.KpiCard
 import com.remotearmz.commandcenter.ui.theme.getStatusColor
-import com.remotearmz.commandcenter.util.CurrencyFormatter
+import com.remotearmz.commandcenter.util.CurrencyConverter
 import com.remotearmz.commandcenter.util.DateFormatter
 import kotlinx.coroutines.launch
 import java.util.Date
@@ -287,7 +287,7 @@ fun LeadStatsSection(stats: LeadStats) {
             )
             KpiCard(
                 title = "Potential Value",
-                value = CurrencyFormatter.formatUSD(stats.weightedValueUSD),
+                value = CurrencyConverter.formatUSD(stats.weightedValueUSD),
                 subtitle = "(Weighted)",
                 modifier = Modifier.weight(1f)
             )
@@ -383,7 +383,7 @@ fun LeadItem(
             ) {
                 Column {
                     Text(
-                        "Value: ${CurrencyFormatter.formatUSD(lead.valueUSD)}",
+                        "Value: ${CurrencyConverter.formatUSD(lead.valueUSD)}",
                         style = MaterialTheme.typography.bodyMedium
                     )
                     Text(

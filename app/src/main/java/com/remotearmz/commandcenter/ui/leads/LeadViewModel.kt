@@ -7,6 +7,7 @@ import com.remotearmz.commandcenter.data.model.LeadStatus
 import com.remotearmz.commandcenter.data.repository.ActivityLogRepository
 import com.remotearmz.commandcenter.data.repository.LeadRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers // Import Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -14,60 +15,63 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.util.UUID
+import kotlinx.coroutines.withContext // Import withContext
 import javax.inject.Inject
 
 @HiltViewModel
 class LeadViewModel @Inject constructor(
     private val leadRepository: LeadRepository,
     private val activityLogRepository: ActivityLogRepository
+    // TODO: Inject an authentication manager or user repository to get the current user ID
 ) : ViewModel() {
-    
+
     private val _uiState = MutableStateFlow(LeadUiState())
     val uiState: StateFlow<LeadUiState> = _uiState.asStateFlow()
-    
+
     private val _searchQuery = MutableStateFlow("")
     private val _filterStatus = MutableStateFlow<LeadStatus?>(null)
-    
-    val leads = combine(
+
+    // Reactive flow for leads, automatically updates on data change, search, or filter
+    val leads: StateFlow<List<Lead>> = combine(
         leadRepository.getAllLeads(),
         _searchQuery,
         _filterStatus
     ) { leads, query, status ->
         var filteredLeads = leads
-        
+
         // Apply search query filter
         if (query.isNotBlank()) {
             filteredLeads = filteredLeads.filter { lead ->
                 lead.contactName.contains(query, ignoreCase = true) ||
-                lead.company.contains(query, ignoreCase = true) ||
-                lead.email.contains(query, ignoreCase = true)
+                (lead.company?.contains(query, ignoreCase = true) == true) || // Null check for company
+                (lead.email?.contains(query, ignoreCase = true) == true) // Null check for email
             }
         }
-        
+
         // Apply status filter
         if (status != null) {
             filteredLeads = filteredLeads.filter { it.status == status }
         }
-        
+
         filteredLeads
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = emptyList()
     )
-    
-    val leadStats = leadRepository.getAllLeads().combine(
-        leadRepository.getLeadCountByStatus(LeadStatus.WON)
+
+    // Reactive flow for lead statistics
+    val leadStats: StateFlow<LeadStats> = leadRepository.getAllLeads().combine(
+        leadRepository.getLeadCountByStatus(LeadStatus.WON) // Assuming this flow exists and emits Int
     ) { allLeads, wonCount ->
         val totalCount = allLeads.size
         val activeCount = allLeads.count { it.status == LeadStatus.CONTACTED || it.status == LeadStatus.QUALIFIED || it.status == LeadStatus.PROPOSAL || it.status == LeadStatus.NEGOTIATION }
         val lostCount = allLeads.count { it.status == LeadStatus.LOST }
         val newCount = allLeads.count { it.status == LeadStatus.NEW }
-        
-        val totalValueUSD = allLeads.sumOf { it.valueUSD }
-        val weightedValueUSD = allLeads.sumOf { it.weightedValueUSD }
-        
+
+        val totalValueUSD = allLeads.sumOf { it.valueUSD ?: 0.0 } // Handle potential null value
+        val weightedValueUSD = allLeads.sumOf { it.weightedValueUSD ?: 0.0 } // Handle potential null value
+
         LeadStats(
             totalCount = totalCount,
             activeCount = activeCount,
@@ -83,100 +87,83 @@ class LeadViewModel @Inject constructor(
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = LeadStats()
     )
-    
-    init {
-        loadLeads()
-    }
-    
-    private fun loadLeads() {
-        viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isLoading = true)
-            try {
-                // Leads are loaded via the StateFlow
-                _uiState.value = _uiState.value.copy(isLoading = false, error = null)
-            } catch (e: Exception) {
-                _uiState.value = _uiState.value.copy(isLoading = false, error = e.message)
-            }
-        }
-    }
-    
+
+    // No need for explicit loadLeads() function as StateFlow handles loading reactively
+    // init { }
+
     fun updateSearchQuery(query: String) {
         _searchQuery.value = query
     }
-    
+
     fun updateStatusFilter(status: LeadStatus?) {
         _filterStatus.value = status
     }
-    
+
     fun saveLead(lead: Lead) {
         viewModelScope.launch {
             try {
-                val isNewLead = lead.id == UUID.randomUUID().toString()
-                leadRepository.insertLead(lead)
-                
-                // Log the activity
-                val action = if (isNewLead) "Added Lead" else "Updated Lead"
-                activityLogRepository.logActivity(
-                    action = action,
-                    details = "${lead.contactName} (${lead.company})",
-                    userId = "current-user" // Replace with actual user ID from auth
-                )
-                
-                _uiState.value = _uiState.value.copy(isLeadSaved = true)
+                // Assume repository handles insert vs update based on ID existence
+                val isUpdating = leadRepository.getLeadById(lead.id) != null // Check if lead exists
+                leadRepository.insertOrUpdateLead(lead) // Use a single repository method if possible
+
+                // Log the activity (ensure operations run on appropriate dispatcher if needed)
+                val action = if (isUpdating) "Updated Lead" else "Added Lead"
+                logLeadActivity(action, lead)
+
+                _uiState.value = _uiState.value.copy(isLeadSaved = true, error = null)
             } catch (e: Exception) {
-                _uiState.value = _uiState.value.copy(error = e.message)
+                _uiState.value = _uiState.value.copy(error = "Failed to save lead: ${e.message}")
             }
         }
     }
-    
+
     fun deleteLead(lead: Lead) {
         viewModelScope.launch {
             try {
                 leadRepository.deleteLead(lead)
-                
                 // Log the activity
-                activityLogRepository.logActivity(
-                    action = "Deleted Lead",
-                    details = "${lead.contactName} (${lead.company})",
-                    userId = "current-user" // Replace with actual user ID from auth
-                )
-                
-                _uiState.value = _uiState.value.copy(isLeadDeleted = true)
+                logLeadActivity("Deleted Lead", lead)
+                _uiState.value = _uiState.value.copy(isLeadDeleted = true, error = null)
             } catch (e: Exception) {
-                _uiState.value = _uiState.value.copy(error = e.message)
+                _uiState.value = _uiState.value.copy(error = "Failed to delete lead: ${e.message}")
             }
         }
     }
-    
+
     fun updateLeadStatus(lead: Lead, newStatus: LeadStatus) {
         viewModelScope.launch {
             try {
                 val updatedLead = lead.copy(status = newStatus, updatedAt = System.currentTimeMillis())
                 leadRepository.updateLead(updatedLead)
-                
                 // Log the activity
-                activityLogRepository.logActivity(
-                    action = "Updated Lead Status",
-                    details = "${lead.contactName} status changed to ${newStatus.name}",
-                    userId = "current-user" // Replace with actual user ID from auth
-                )
+                logLeadActivity("Updated Lead Status to ${newStatus.name}", lead)
             } catch (e: Exception) {
-                _uiState.value = _uiState.value.copy(error = e.message)
+                _uiState.value = _uiState.value.copy(error = "Failed to update lead status: ${e.message}")
             }
         }
     }
-    
+
+    // Helper function for logging activity
+    private suspend fun logLeadActivity(action: String, lead: Lead) {
+        // Use withContext(Dispatchers.IO) if repository operation is blocking
+        activityLogRepository.logActivity(
+            action = action,
+            details = "${lead.contactName} (${lead.company ?: "N/A"})", // Handle null company
+            userId = "TODO: Get Actual User ID" // Placeholder for actual user ID
+        )
+    }
+
     fun resetSaveState() {
         _uiState.value = _uiState.value.copy(isLeadSaved = false, isLeadDeleted = false)
     }
-    
+
     fun clearError() {
         _uiState.value = _uiState.value.copy(error = null)
     }
 }
 
 data class LeadUiState(
-    val isLoading: Boolean = false,
+    val isLoading: Boolean = false, // Consider removing if loading is handled implicitly by StateFlow
     val isLeadSaved: Boolean = false,
     val isLeadDeleted: Boolean = false,
     val error: String? = null
@@ -192,3 +179,4 @@ data class LeadStats(
     val totalValueUSD: Double = 0.0,
     val weightedValueUSD: Double = 0.0
 )
+

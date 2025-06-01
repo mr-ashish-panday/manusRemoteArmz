@@ -31,7 +31,9 @@ object DatabaseModule {
             context,
             RemoteArmzDatabase::class.java,
             "remotearmz_database"
-        ).fallbackToDestructiveMigration().build()
+        )
+        // TODO: Replace fallbackToDestructiveMigration with proper migrations for production builds
+        .fallbackToDestructiveMigration().build()
     }
     
     // Provide DAOs
