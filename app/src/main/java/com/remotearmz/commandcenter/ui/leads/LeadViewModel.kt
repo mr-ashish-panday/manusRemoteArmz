@@ -102,11 +102,17 @@ class LeadViewModel @Inject constructor(
     fun saveLead(lead: Lead) {
         viewModelScope.launch {
             try {
-                // Assume repository handles insert vs update based on ID existence
-                val isUpdating = leadRepository.getLeadById(lead.id) != null // Check if lead exists
-                leadRepository.insertOrUpdateLead(lead) // Use a single repository method if possible
+                // Check if lead exists to determine if we're updating or inserting
+                val existingLead = leadRepository.getLeadById(lead.id)
+                val isUpdating = existingLead != null
+                
+                if (isUpdating) {
+                    leadRepository.updateLead(lead)
+                } else {
+                    leadRepository.insertLead(lead)
+                }
 
-                // Log the activity (ensure operations run on appropriate dispatcher if needed)
+                // Log the activity
                 val action = if (isUpdating) "Updated Lead" else "Added Lead"
                 logLeadActivity(action, lead)
 

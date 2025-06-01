@@ -28,6 +28,9 @@ class OutreachActivityRepository @Inject constructor(
     
     fun getOutreachActivitiesByDateRange(startDate: Long, endDate: Long): Flow<List<OutreachActivity>> = 
         outreachActivityDao.getOutreachActivitiesByDateRange(startDate, endDate)
+        
+    fun getFollowUpsInRange(startTime: Long, endTime: Long): Flow<List<OutreachActivity>> =
+        outreachActivityDao.getFollowUpsInRange(startTime, endTime)
     
     fun getOutreachCountByOutcome(outcome: OutreachOutcome): Flow<Int> = 
         outreachActivityDao.getOutreachCountByOutcome(outcome)

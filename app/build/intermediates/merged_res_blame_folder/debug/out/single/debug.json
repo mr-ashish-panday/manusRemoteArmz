@@ -1,0 +1,46 @@
+[
+    {
+        "merged": "com.remotearmz.commandcenter.app-merged_res-72:/drawable_ic_targets.xml.flat",
+        "source": "com.remotearmz.commandcenter.app-main-74:/drawable/ic_targets.xml"
+    },
+    {
+        "merged": "com.remotearmz.commandcenter.app-merged_res-72:/drawable_ic_clients.xml.flat",
+        "source": "com.remotearmz.commandcenter.app-main-74:/drawable/ic_clients.xml"
+    },
+    {
+        "merged": "com.remotearmz.commandcenter.app-merged_res-72:/drawable_ic_outreach.xml.flat",
+        "source": "com.remotearmz.commandcenter.app-main-74:/drawable/ic_outreach.xml"
+    },
+    {
+        "merged": "com.remotearmz.commandcenter.app-merged_res-72:/drawable_ic_launcher_foreground.xml.flat",
+        "source": "com.remotearmz.commandcenter.app-main-74:/drawable/ic_launcher_foreground.xml"
+    },
+    {
+        "merged": "com.remotearmz.commandcenter.app-merged_res-72:/drawable_ic_dashboard.xml.flat",
+        "source": "com.remotearmz.commandcenter.app-main-74:/drawable/ic_dashboard.xml"
+    },
+    {
+        "merged": "com.remotearmz.commandcenter.app-merged_res-72:/drawable_ic_dark_mode.xml.flat",
+        "source": "com.remotearmz.commandcenter.app-main-74:/drawable/ic_dark_mode.xml"
+    },
+    {
+        "merged": "com.remotearmz.commandcenter.app-merged_res-72:/drawable_ic_light_mode.xml.flat",
+        "source": "com.remotearmz.commandcenter.app-main-74:/drawable/ic_light_mode.xml"
+    },
+    {
+        "merged": "com.remotearmz.commandcenter.app-merged_res-72:/drawable_ic_leads.xml.flat",
+        "source": "com.remotearmz.commandcenter.app-main-74:/drawable/ic_leads.xml"
+    },
+    {
+        "merged": "com.remotearmz.commandcenter.app-merged_res-72:/mipmap_ic_launcher.xml.flat",
+        "source": "com.remotearmz.commandcenter.app-main-74:/mipmap/ic_launcher.xml"
+    },
+    {
+        "merged": "com.remotearmz.commandcenter.app-merged_res-72:/drawable_ic_settings.xml.flat",
+        "source": "com.remotearmz.commandcenter.app-main-74:/drawable/ic_settings.xml"
+    },
+    {
+        "merged": "com.remotearmz.commandcenter.app-merged_res-72:/mipmap_ic_launcher_round.xml.flat",
+        "source": "com.remotearmz.commandcenter.app-main-74:/mipmap/ic_launcher_round.xml"
+    }
+]

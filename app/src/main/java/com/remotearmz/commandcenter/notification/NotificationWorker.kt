@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import com.remotearmz.commandcenter.data.model.ContactType
 import com.remotearmz.commandcenter.data.model.OutreachOutcome
 import com.remotearmz.commandcenter.data.repository.ClientRepository
 import com.remotearmz.commandcenter.data.repository.LeadRepository
@@ -11,7 +12,13 @@ import com.remotearmz.commandcenter.data.repository.OutreachActivityRepository
 import com.remotearmz.commandcenter.data.repository.TargetRepository
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.joinAll
+import kotlinx.coroutines.launch
+import android.util.Log
 import java.util.Calendar
 import java.util.concurrent.TimeUnit
 
@@ -25,6 +32,8 @@ class NotificationWorker @AssistedInject constructor(
     private val targetRepository: TargetRepository,
     private val notificationHelper: NotificationHelper
 ) : CoroutineWorker(context, params) {
+    
+    private val coroutineScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
 
     companion object {
         const val WORK_NAME = "notification_worker"
@@ -50,29 +59,46 @@ class NotificationWorker @AssistedInject constructor(
     }
 
     private suspend fun checkFollowUps() {
-        val currentTime = System.currentTimeMillis()
-        val endOfDay = Calendar.getInstance().apply {
-            timeInMillis = currentTime
-            set(Calendar.HOUR_OF_DAY, 23)
-            set(Calendar.MINUTE, 59)
-            set(Calendar.SECOND, 59)
-            set(Calendar.MILLISECOND, 999)
-        }.timeInMillis
+        try {
+            val currentTime = System.currentTimeMillis()
+            val calendar = Calendar.getInstance().apply {
+                timeInMillis = currentTime
+                set(Calendar.HOUR_OF_DAY, 23)
+                set(Calendar.MINUTE, 59)
+                set(Calendar.SECOND, 59)
+                set(Calendar.MILLISECOND, 999)
+            }
+            val endOfDay = calendar.timeInMillis
 
-        // Fetch follow-ups due between now and end of today
-        val followUps = outreachRepository.getFollowUpsInRange(currentTime, endOfDay).first()
-
-        followUps.forEach { activity ->
-            // Fetch contact name based on type
-            val contactName = when (activity.contactType) {
-                com.remotearmz.commandcenter.data.model.ContactType.CLIENT ->
-                    clientRepository.getClientById(activity.contactId)?.name ?: "Unknown Client"
-                com.remotearmz.commandcenter.data.model.ContactType.LEAD ->
-                    leadRepository.getLeadById(activity.contactId)?.contactName ?: "Unknown Lead"
-                // else case might not be needed if ContactType enum only has CLIENT/LEAD
+            // Fetch follow-ups due between now and end of today
+            val followUps = try {
+                outreachRepository.getFollowUpsInRange(currentTime, endOfDay).first()
+            } catch (e: Exception) {
+                Log.e("NotificationWorker", "Error fetching follow-ups: ${e.message}")
+                emptyList()
             }
 
-            notificationHelper.showFollowUpNotification(activity, contactName)
+            // Process follow-ups in parallel
+            followUps.map { activity ->
+                coroutineScope.launch {
+                    try {
+                        // Fetch contact name based on type
+                        val contactName = when (activity.contactType) {
+                            ContactType.CLIENT -> {
+                                clientRepository.getClientById(activity.contactId)?.name ?: "Unknown Client"
+                            }
+                            ContactType.LEAD -> {
+                                leadRepository.getLeadById(activity.contactId)?.contactName ?: "Unknown Lead"
+                            }
+                        }
+                        notificationHelper.showFollowUpNotification(activity, contactName)
+                    } catch (e: Exception) {
+                        Log.e("NotificationWorker", "Error processing follow-up: ${e.message}")
+                    }
+                }
+            }.joinAll()
+        } catch (e: Exception) {
+            Log.e("NotificationWorker", "Error in checkFollowUps: ${e.message}")
         }
     }
 
@@ -98,6 +124,8 @@ class NotificationWorker @AssistedInject constructor(
 
         // Check if today is Monday (Calendar.MONDAY = 2)
         if (calendar.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY) {
+            // Get client count for weekly summary
+            @Suppress("UNUSED_VARIABLE")
             val clientCount = clientRepository.getAllClients().first().size
             val leadCount = leadRepository.getActiveLeadCount().first()
 

@@ -57,7 +57,7 @@ class DriveService @Inject constructor(
     suspend fun uploadBackup(data: String, fileName: String? = null): Boolean {
         return withContext(Dispatchers.IO) {
             try {
-                _backupStatus.value = BackupStatus.InProgress
+                _backupStatus.value = BackupStatus.InProgress("Uploading backup...")
                 
                 val driveService = drive ?: run {
                     _backupStatus.value = BackupStatus.Failed("Not signed in")
@@ -137,7 +137,7 @@ class DriveService @Inject constructor(
 
 sealed class BackupStatus {
     object Idle : BackupStatus()
-    object InProgress : BackupStatus()
+    data class InProgress(val message: String = "In progress...") : BackupStatus()
     data class Success(val message: String) : BackupStatus()
     data class Failed(val error: String) : BackupStatus()
 }

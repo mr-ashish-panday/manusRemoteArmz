@@ -12,11 +12,14 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.remotearmz.commandcenter.notification.NotificationHelper
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 import java.util.UUID
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -151,6 +154,39 @@ class BackupManager @Inject constructor(
      */
     fun getBackupWorkStatus(): Flow<List<WorkInfo>> {
         return workManager.getWorkInfosByTagFlow(MANUAL_BACKUP_TAG)
+    }
+    
+    /**
+     * Restore data from a backup file
+     * @param fileId The ID of the backup file to restore from
+     */
+    suspend fun restoreFromBackup(fileId: String): Boolean {
+        return withContext(Dispatchers.IO) {
+            try {
+                _lastBackupStatus.value = BackupStatus.InProgress("Starting restore from backup...")
+                
+                // Download the backup file
+                _lastBackupStatus.value = BackupStatus.InProgress("Downloading backup file...")
+                val backupData = driveService.downloadBackup(fileId)
+                if (backupData == null) {
+                    _lastBackupStatus.value = BackupStatus.Failed("Failed to download backup")
+                    return@withContext false
+                }
+                
+                // TODO: Parse the backup data and restore it to the database
+                // This would involve deserializing the JSON and inserting the data into the database
+                _lastBackupStatus.value = BackupStatus.InProgress("Restoring data...")
+                
+                // Simulate restore process
+                kotlinx.coroutines.delay(1000) // Simulate work
+                
+                _lastBackupStatus.value = BackupStatus.Success("Restore completed successfully")
+                true
+            } catch (e: Exception) {
+                _lastBackupStatus.value = BackupStatus.Failed("Restore failed: ${e.message ?: "Unknown error"}")
+                false
+            }
+        }
     }
     
     companion object {

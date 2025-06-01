@@ -20,17 +20,22 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
-// DataStore for preferences
-val Context.dataStore by preferencesDataStore(name = "settings")
-
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    // DataStore for preferences
+    private val Context.dataStore by preferencesDataStore(name = "settings")
+    
     // Theme preference key
     private val DARK_THEME_KEY = booleanPreferencesKey("dark_theme")
 
+    // Lazy initialization of the dataStore
+    private val dataStore by lazy { applicationContext.dataStore }
+
     // Get theme preference flow
-    private val isDarkThemeFlow: Flow<Boolean> = dataStore.data.map { preferences ->
-        preferences[DARK_THEME_KEY] ?: false // Default to light theme
+    private val isDarkThemeFlow: Flow<Boolean> by lazy {
+        dataStore.data.map { preferences ->
+            preferences[DARK_THEME_KEY] ?: false // Default to light theme
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

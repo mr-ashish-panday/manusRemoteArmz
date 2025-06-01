@@ -1,0 +1,37 @@
+<lint-module
+    format="1"
+    dir="C:\Users\Ashish\AshishRemote\manusRemoteArmz\app"
+    name=":app"
+    type="APP"
+    maven="RemoteArmz:app:"
+    gradle="7.4.2"
+    buildFolder="build"
+    bootClassPath="C:\Users\Ashish\AppData\Local\Android\Sdk\platforms\android-34\android.jar;C:\Users\Ashish\AppData\Local\Android\Sdk\build-tools\30.0.3\core-lambda-stubs.jar"
+    javaSourceLevel="11"
+    compileTarget="android-34"
+    neverShrinking="true">
+  <lintOptions
+      disable="MissingPermission,ObsoleteSdkInt,GradleDependency,UnsafeOptInUsageError,NewApi"
+      absolutePaths="true"
+      checkReleaseBuilds="true"
+      explainIssues="true">
+    <severities>
+      <severity
+        id="GradleDependency"
+        severity="IGNORE" />
+      <severity
+        id="MissingPermission"
+        severity="IGNORE" />
+      <severity
+        id="NewApi"
+        severity="IGNORE" />
+      <severity
+        id="ObsoleteSdkInt"
+        severity="IGNORE" />
+      <severity
+        id="UnsafeOptInUsageError"
+        severity="IGNORE" />
+    </severities>
+  </lintOptions>
+  <variant name="debug"/>
+</lint-module>
