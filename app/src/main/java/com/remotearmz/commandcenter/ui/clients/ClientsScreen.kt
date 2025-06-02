@@ -1,97 +1,116 @@
 package com.remotearmz.commandcenter.ui.clients
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.animation.*
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.DismissDirection
-import androidx.compose.material3.DismissValue
-import androidx.compose.material3.Divider
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SearchBar
-import androidx.compose.material3.Surface
-import androidx.compose.material3.SwipeToDismiss
-import androidx.compose.material3.Text
-import androidx.compose.material3.rememberDismissState
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.*
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.remotearmz.commandcenter.R
 import com.remotearmz.commandcenter.data.model.Client
 import com.remotearmz.commandcenter.data.model.ClientStatus
 import com.remotearmz.commandcenter.ui.clients.components.ClientForm
 import com.remotearmz.commandcenter.ui.clients.components.ClientListItem
+import com.remotearmz.commandcenter.ui.components.search.EnhancedSearchBar
+import com.remotearmz.commandcenter.ui.components.search.FilterBottomSheet
+import com.remotearmz.commandcenter.ui.components.search.FilterChip
+import com.remotearmz.commandcenter.ui.components.states.EmptyState
+import com.remotearmz.commandcenter.ui.components.states.ErrorState
+import com.remotearmz.commandcenter.ui.components.states.LoadingState
 import com.remotearmz.commandcenter.ui.theme.RemoteArmzTheme
 
-@OptIn(ExperimentalMaterial3Api::class)
+// Removed as we're using UiState from ViewModel
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
-fun ClientsScreen(viewModel: ClientsViewModel = hiltViewModel()) {
-    val clients by viewModel.clients.collectAsState()
+fun ClientsScreen(
+    viewModel: ClientsViewModel = hiltViewModel(),
+    onClientClick: (String) -> Unit = {}
+) {
+    val uiState by viewModel.uiState.collectAsState()
     val searchQuery by viewModel.searchQuery.collectAsState()
     val isAddingClient by viewModel.isAddingClient.collectAsState()
     val editingClient by viewModel.editingClient.collectAsState()
+    val statusFilter by viewModel.statusFilter.collectAsState()
+    val windowSize = calculateWindowSizeClass()
     
     var showDeleteConfirmation by remember { mutableStateOf<Client?>(null) }
+    var showFilterSheet by remember { mutableStateOf(false) }
+    
+    // Active filters for display
+    val activeFilters = remember(statusFilter) {
+        buildList {
+            statusFilter?.let { status ->
+                add("${status.name}" to { viewModel.updateStatusFilter(null) })
+            }
+        }
+    }
+    
+    // Handle side effects
+    LaunchedEffect(Unit) {
+        viewModel.loadClients()
+    }
+    
+    // Show error message if there's an error
+    val errorMessage = when (uiState) {
+        is UiState.Error -> (uiState as UiState.Error).message
+        else -> null
+    }
+    
+    // Show error message as a Snackbar if there's an error
+    val snackbarHostState = remember { SnackbarHostState() }
+    
+    LaunchedEffect(uiState) {
+        if (uiState is UiState.Error) {
+            snackbarHostState.showSnackbar(
+                message = errorMessage ?: "An error occurred",
+                actionLabel = "Dismiss"
+            )
+        }
+    }
     
     Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
-            SearchBar(
+            EnhancedSearchBar(
                 query = searchQuery,
                 onQueryChange = { viewModel.updateSearchQuery(it) },
-                onSearch = { viewModel.updateSearchQuery(it) },
-                active = false,
-                onActiveChange = { },
-                placeholder = { Text("Search clients...") },
-                leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search") },
-                trailingIcon = {
-                    if (searchQuery.isNotEmpty()) {
-                        IconButton(onClick = { viewModel.updateSearchQuery("") }) {
-                            Icon(Icons.Default.Clear, contentDescription = "Clear search")
-                        }
-                    }
-                },
-                modifier = Modifier.fillMaxWidth()
-            ) { }
+                onSearch = { viewModel.searchClients(it) },
+                activeFilters = activeFilters,
+                onFilterClick = { showFilterSheet = true },
+                placeholder = stringResource(R.string.search_clients)
+            )
         },
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = { viewModel.showAddClientDialog() },
-                containerColor = MaterialTheme.colorScheme.primary
+            AnimatedVisibility(
+                visible = uiState !is ClientsScreenState.Loading,
+                enter = fadeIn() + slideInHorizontally { it },
+                exit = fadeOut() + slideOutHorizontally { -it }
             ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = "Add Client",
-                    tint = MaterialTheme.colorScheme.onPrimary
-                )
+                FloatingActionButton(
+                    onClick = { viewModel.showAddClientDialog() },
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.animateContentSize()
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = stringResource(R.string.add_client),
+                        tint = MaterialTheme.colorScheme.onPrimary
+                    )
+                }
             }
         }
     ) { paddingValues ->
@@ -100,90 +119,123 @@ fun ClientsScreen(viewModel: ClientsViewModel = hiltViewModel()) {
             color = MaterialTheme.colorScheme.background
         ) {
             Box(modifier = Modifier.fillMaxSize()) {
-                if (clients.isEmpty() && searchQuery.isEmpty()) {
-                    // Empty state
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(16.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Spacer(modifier = Modifier.weight(1f))
-                        Text(
-                            text = "No clients yet",
-                            style = MaterialTheme.typography.headlineMedium,
-                            textAlign = TextAlign.Center
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = "Add your first client by clicking the + button",
-                            style = MaterialTheme.typography.bodyLarge,
-                            textAlign = TextAlign.Center,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                        Spacer(modifier = Modifier.weight(1f))
+                when (val state = uiState) {
+                    is UiState.Loading -> {
+                        LoadingState()
                     }
-                } else if (clients.isEmpty() && searchQuery.isNotEmpty()) {
-                    // No search results
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(16.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Spacer(modifier = Modifier.weight(1f))
-                        Text(
-                            text = "No clients found",
-                            style = MaterialTheme.typography.headlineMedium,
-                            textAlign = TextAlign.Center
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = "Try a different search term",
-                            style = MaterialTheme.typography.bodyLarge,
-                            textAlign = TextAlign.Center,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                        Spacer(modifier = Modifier.weight(1f))
-                    }
-                } else {
-                    // Client list
-                    LazyColumn(
-                        contentPadding = PaddingValues(
-                            start = 16.dp,
-                            top = 16.dp,
-                            end = 16.dp,
-                            bottom = 16.dp + paddingValues.calculateBottomPadding()
-                        ),
-                        modifier = Modifier.fillMaxSize()
-                    ) {
-                        items(clients, key = { it.id }) { client ->
-                            val dismissState = rememberDismissState(
-                                confirmValueChange = { dismissValue ->
-                                    if (dismissValue == DismissValue.DismissedToStart) {
-                                        showDeleteConfirmation = client
-                                        true
-                                    } else {
-                                        false
+                    is UiState.Success -> {
+                        if (state.data.isEmpty()) {
+                            if (searchQuery.isNotEmpty() || statusFilter != null) {
+                                EmptyState(
+                                    title = stringResource(R.string.no_results_title),
+                                    message = stringResource(R.string.no_results_message),
+                                    icon = {
+                                        Icon(
+                                            Icons.Default.SearchOff,
+                                            contentDescription = null,
+                                            modifier = Modifier.size(48.dp),
+                                            tint = MaterialTheme.colorScheme.primary
+                                        )
+                                    },
+                                    action = {
+                                        Button(onClick = { 
+                                            viewModel.updateSearchQuery("")
+                                            viewModel.updateStatusFilter(null)
+                                        }) {
+                                            Text(stringResource(R.string.clear_filters))
+                                        }
+                                    }
+                                )
+                            } else {
+                                EmptyState(
+                                    title = stringResource(R.string.no_clients_title),
+                                    message = stringResource(R.string.no_clients_message),
+                                    icon = {
+                                        Icon(
+                                            Icons.Default.PersonOutline,
+                                            contentDescription = null,
+                                            modifier = Modifier.size(48.dp),
+                                            tint = MaterialTheme.colorScheme.primary
+                                        )
+                                    },
+                                    action = {
+                                        Button(onClick = { viewModel.showAddClientDialog() }) {
+                                            Text(stringResource(R.string.add_first_client))
+                                        }
+                                    }
+                                )
+                            }
+                        } else {
+                            AnimatedVisibility(
+                                visible = state.data.isNotEmpty(),
+                                enter = fadeIn() + expandVertically(),
+                                exit = fadeOut() + shrinkVertically()
+                            ) {
+                                LazyColumn(
+                                    contentPadding = PaddingValues(
+                                        start = 16.dp,
+                                        top = 8.dp,
+                                        end = 16.dp,
+                                        bottom = 16.dp + paddingValues.calculateBottomPadding()
+                                    ),
+                                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                                    modifier = Modifier.fillMaxSize()
+                                ) {
+                                    items(
+                                        items = state.data,
+                                        key = { it.id },
+                                        contentType = { "client" }
+                                    ) { client ->
+                                        val dismissState = rememberDismissState(
+                                            confirmValueChange = { dismissValue ->
+                                                if (dismissValue == DismissValue.DismissedToStart) {
+                                                    showDeleteConfirmation = client
+                                                    true
+                                                } else {
+                                                    false
+                                                }
+                                            }
+                                        )
+                                        
+                                        AnimatedVisibility(
+                                            visible = dismissState.currentValue != DismissValue.DismissedToStart,
+                                            enter = fadeIn() + expandVertily(),
+                                            exit = fadeOut() + shrinkVertically()
+                                        ) {
+                                            SwipeToDismiss(
+                                                state = dismissState,
+                                                background = {
+                                                    Box(
+                                                        modifier = Modifier
+                                                            .fillMaxSize()
+                                                            .background(MaterialTheme.colorScheme.errorContainer)
+                                                            .padding(16.dp),
+                                                        contentAlignment = Alignment.CenterEnd
+                                                    ) {
+                                                        Icon(
+                                                            Icons.Default.Delete,
+                                                            contentDescription = stringResource(R.string.delete),
+                                                            tint = MaterialTheme.colorScheme.onErrorContainer
+                                                        )
+                                                    }
+                                                },
+                                                dismissContent = {
+                                                    ClientListItem(
+                                                        client = client,
+                                                        onClick = { onClientClick(client.id) },
+                                                        modifier = Modifier.animateItemPlacement()
+                                                    )
+                                                },
+                                                directions = setOf(DismissDirection.EndToStart)
+                                            )
+                                        }
+                                    }
+                                    
+                                    // Add extra padding at the bottom for FAB
+                                    item {
+                                        Spacer(modifier = Modifier.height(72.dp))
                                     }
                                 }
-                            )
-                            
-                            SwipeToDismiss(
-                                state = dismissState,
-                                background = {},
-                                dismissContent = {
-                                    ClientListItem(
-                                        client = client,
-                                        onClick = { viewModel.showEditClientDialog(client) },
-                                        modifier = Modifier.padding(vertical = 8.dp)
-                                    )
-                                },
-                                directions = setOf(DismissDirection.EndToStart)
-                            )
-                            
-                            if (clients.indexOf(client) < clients.size - 1) {
-                                Divider(modifier = Modifier.padding(vertical = 8.dp))
                             }
                         }
                     }
@@ -193,27 +245,22 @@ fun ClientsScreen(viewModel: ClientsViewModel = hiltViewModel()) {
                 if (isAddingClient) {
                     Dialog(onDismissRequest = { viewModel.hideAddClientDialog() }) {
                         Surface(
-                            shape = MaterialTheme.shapes.medium,
-                            color = MaterialTheme.colorScheme.surface
+                            shape = MaterialTheme.shapes.extraLarge,
+                            color = MaterialTheme.colorScheme.surface,
+                            tonalElevation = 6.dp,
+                            shadowElevation = 6.dp
                         ) {
                             ClientForm(
-                                onSave = { viewModel.addClient(it) },
-                                onCancel = { viewModel.hideAddClientDialog() }
-                            )
-                        }
-                    }
-                }
-                
-                editingClient?.let { client ->
-                    Dialog(onDismissRequest = { viewModel.hideEditClientDialog() }) {
-                        Surface(
-                            shape = MaterialTheme.shapes.medium,
-                            color = MaterialTheme.colorScheme.surface
-                        ) {
-                            ClientForm(
-                                client = client,
-                                onSave = { viewModel.updateClient(it) },
-                                onCancel = { viewModel.hideEditClientDialog() }
+                                client = editingClient,
+                                onSave = { client ->
+                                    if (editingClient == null) {
+                                        viewModel.addClient(client)
+                                    } else {
+                                        viewModel.updateClient(client)
+                                    }
+                                },
+                                onCancel = { viewModel.hideAddClientDialog() },
+                                modifier = Modifier.padding(24.dp)
                             )
                         }
                     }
@@ -223,25 +270,67 @@ fun ClientsScreen(viewModel: ClientsViewModel = hiltViewModel()) {
                 showDeleteConfirmation?.let { client ->
                     AlertDialog(
                         onDismissRequest = { showDeleteConfirmation = null },
-                        title = { Text("Delete Client") },
-                        text = { Text("Are you sure you want to delete ${client.name}? This action cannot be undone.") },
+                        title = { Text(stringResource(R.string.delete_client_title)) },
+                        text = { 
+                            Text(
+                                stringResource(
+                                    R.string.delete_client_message, 
+                                    client.name
+                                )
+                            ) 
+                        },
                         confirmButton = {
-                            androidx.compose.material3.TextButton(
+                            TextButton(
                                 onClick = {
                                     viewModel.deleteClient(client)
                                     showDeleteConfirmation = null
                                 }
                             ) {
-                                Text("Delete")
+                                Text(stringResource(R.string.delete))
                             }
                         },
                         dismissButton = {
-                            androidx.compose.material3.TextButton(
+                            TextButton(
                                 onClick = { showDeleteConfirmation = null }
                             ) {
-                                Text("Cancel")
+                                Text(stringResource(R.string.cancel))
                             }
                         }
+                    )
+                }
+            }
+        }
+        
+        // Filter Bottom Sheet
+        FilterBottomSheet(
+            isVisible = showFilterSheet,
+            onDismiss = { showFilterSheet = false },
+            onApply = { showFilterSheet = false },
+            onClear = { 
+                viewModel.updateStatusFilter(null)
+                viewModel.updateSearchQuery("")
+            }
+        ) {
+            // Status Filter Section
+            Text(
+                text = "Status",
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.padding(vertical = 8.dp)
+            )
+            
+            FlowRow(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                ClientStatus.values().forEach { status ->
+                    FilterChip(
+                        selected = statusFilter == status,
+                        onClick = { 
+                            viewModel.updateStatusFilter(
+                                if (statusFilter == status) null else status
+                            )
+                        },
+                        label = { Text(status.name) }
                     )
                 }
             }

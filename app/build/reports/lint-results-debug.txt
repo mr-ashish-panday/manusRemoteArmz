@@ -1,4 +1,0 @@
-C:\Users\Ashish\AshishRemote\manusRemoteArmz\app\lint-baseline.xml: Information: 25 warnings were filtered out because they are listed in the baseline file, lint-baseline.xml
- [LintBaseline]
-C:\Users\Ashish\AshishRemote\manusRemoteArmz\app\lint-baseline.xml: Information: 3 errors/warnings were listed in the baseline file (lint-baseline.xml) but not found in the project; perhaps they have been fixed? Another possible explanation is that lint recently stopped analyzing (and including results from) dependent projects by default. You can turn this back on with android.lintOptions.checkDependencies=true. Unmatched issue types: BadPeriodicWorkRequestEnqueue, NewApi (2) [LintBaseline]
-0 errors, 0 warnings (25 warnings filtered by baseline lint-baseline.xml)

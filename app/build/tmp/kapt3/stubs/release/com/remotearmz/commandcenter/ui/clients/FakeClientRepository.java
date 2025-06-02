@@ -1,14 +1,18 @@
 package com.remotearmz.commandcenter.ui.clients;
 
+import androidx.compose.animation.*;
+import androidx.compose.foundation.ExperimentalFoundationApi;
+import androidx.compose.foundation.layout.*;
 import androidx.compose.material.icons.Icons;
-import androidx.compose.material3.DismissDirection;
-import androidx.compose.material3.DismissValue;
-import androidx.compose.material3.ExperimentalMaterial3Api;
-import androidx.compose.runtime.Composable;
+import androidx.compose.material.icons.filled.*;
+import androidx.compose.material3.*;
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass;
+import androidx.compose.runtime.*;
 import androidx.compose.ui.Alignment;
 import androidx.compose.ui.Modifier;
+import androidx.compose.ui.graphics.vector.ImageVector;
 import androidx.compose.ui.text.style.TextAlign;
-import androidx.compose.ui.tooling.preview.Preview;
+import com.remotearmz.commandcenter.R;
 import com.remotearmz.commandcenter.data.model.Client;
 import com.remotearmz.commandcenter.data.model.ClientStatus;
 

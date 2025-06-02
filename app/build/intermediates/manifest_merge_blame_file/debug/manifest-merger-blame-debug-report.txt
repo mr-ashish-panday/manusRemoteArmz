@@ -6,19 +6,19 @@
 6
 7    <uses-sdk
 8        android:minSdkVersion="26"
-8-->C:\Users\Ashish\AshishRemote\manusRemoteArmz\app\src\main\AndroidManifest.xml
+8-->C:\Users\Ashish\AshishStrive\manusRemoteArmz\app\src\main\AndroidManifest.xml
 9        android:targetSdkVersion="34" />
-9-->C:\Users\Ashish\AshishRemote\manusRemoteArmz\app\src\main\AndroidManifest.xml
+9-->C:\Users\Ashish\AshishStrive\manusRemoteArmz\app\src\main\AndroidManifest.xml
 10
 11    <uses-permission android:name="android.permission.INTERNET" />
-11-->C:\Users\Ashish\AshishRemote\manusRemoteArmz\app\src\main\AndroidManifest.xml:4:5-67
-11-->C:\Users\Ashish\AshishRemote\manusRemoteArmz\app\src\main\AndroidManifest.xml:4:22-64
+11-->C:\Users\Ashish\AshishStrive\manusRemoteArmz\app\src\main\AndroidManifest.xml:4:5-67
+11-->C:\Users\Ashish\AshishStrive\manusRemoteArmz\app\src\main\AndroidManifest.xml:4:22-64
 12    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-12-->C:\Users\Ashish\AshishRemote\manusRemoteArmz\app\src\main\AndroidManifest.xml:5:5-71
-12-->C:\Users\Ashish\AshishRemote\manusRemoteArmz\app\src\main\AndroidManifest.xml:5:22-68
+12-->C:\Users\Ashish\AshishStrive\manusRemoteArmz\app\src\main\AndroidManifest.xml:5:5-71
+12-->C:\Users\Ashish\AshishStrive\manusRemoteArmz\app\src\main\AndroidManifest.xml:5:22-68
 13    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-13-->C:\Users\Ashish\AshishRemote\manusRemoteArmz\app\src\main\AndroidManifest.xml:6:5-77
-13-->C:\Users\Ashish\AshishRemote\manusRemoteArmz\app\src\main\AndroidManifest.xml:6:22-74
+13-->C:\Users\Ashish\AshishStrive\manusRemoteArmz\app\src\main\AndroidManifest.xml:6:5-77
+13-->C:\Users\Ashish\AshishStrive\manusRemoteArmz\app\src\main\AndroidManifest.xml:6:22-74
 14    <uses-permission android:name="android.permission.WAKE_LOCK" />
 14-->[androidx.work:work-runtime:2.9.0] C:\Users\Ashish\.gradle\caches\transforms-3\c8579443ea237d77b2711e5dfd99d807\transformed\work-runtime-2.9.0\AndroidManifest.xml:23:5-68
 14-->[androidx.work:work-runtime:2.9.0] C:\Users\Ashish\.gradle\caches\transforms-3\c8579443ea237d77b2711e5dfd99d807\transformed\work-runtime-2.9.0\AndroidManifest.xml:23:22-65
@@ -44,51 +44,51 @@
 23-->[androidx.core:core:1.10.1] C:\Users\Ashish\.gradle\caches\transforms-3\36f124b03f4dbe03d108a9a4bf4c6874\transformed\core-1.10.1\AndroidManifest.xml:26:22-94
 24
 25    <application
-25-->C:\Users\Ashish\AshishRemote\manusRemoteArmz\app\src\main\AndroidManifest.xml:8:5-31:19
+25-->C:\Users\Ashish\AshishStrive\manusRemoteArmz\app\src\main\AndroidManifest.xml:8:5-31:19
 26        android:name="com.remotearmz.commandcenter.RemoteArmzApplication"
-26-->C:\Users\Ashish\AshishRemote\manusRemoteArmz\app\src\main\AndroidManifest.xml:9:9-46
+26-->C:\Users\Ashish\AshishStrive\manusRemoteArmz\app\src\main\AndroidManifest.xml:9:9-46
 27        android:allowBackup="true"
-27-->C:\Users\Ashish\AshishRemote\manusRemoteArmz\app\src\main\AndroidManifest.xml:10:9-35
+27-->C:\Users\Ashish\AshishStrive\manusRemoteArmz\app\src\main\AndroidManifest.xml:10:9-35
 28        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
 28-->[androidx.core:core:1.10.1] C:\Users\Ashish\.gradle\caches\transforms-3\36f124b03f4dbe03d108a9a4bf4c6874\transformed\core-1.10.1\AndroidManifest.xml:28:18-86
 29        android:debuggable="true"
 30        android:extractNativeLibs="false"
 31        android:icon="@mipmap/ic_launcher"
-31-->C:\Users\Ashish\AshishRemote\manusRemoteArmz\app\src\main\AndroidManifest.xml:11:9-43
+31-->C:\Users\Ashish\AshishStrive\manusRemoteArmz\app\src\main\AndroidManifest.xml:11:9-43
 32        android:label="RemoteArmz"
-32-->C:\Users\Ashish\AshishRemote\manusRemoteArmz\app\src\main\AndroidManifest.xml:12:9-35
+32-->C:\Users\Ashish\AshishStrive\manusRemoteArmz\app\src\main\AndroidManifest.xml:12:9-35
 33        android:roundIcon="@mipmap/ic_launcher_round"
-33-->C:\Users\Ashish\AshishRemote\manusRemoteArmz\app\src\main\AndroidManifest.xml:13:9-54
+33-->C:\Users\Ashish\AshishStrive\manusRemoteArmz\app\src\main\AndroidManifest.xml:13:9-54
 34        android:supportsRtl="true"
-34-->C:\Users\Ashish\AshishRemote\manusRemoteArmz\app\src\main\AndroidManifest.xml:14:9-35
+34-->C:\Users\Ashish\AshishStrive\manusRemoteArmz\app\src\main\AndroidManifest.xml:14:9-35
 35        android:theme="@style/Theme.RemoteArmz" >
-35-->C:\Users\Ashish\AshishRemote\manusRemoteArmz\app\src\main\AndroidManifest.xml:15:9-48
+35-->C:\Users\Ashish\AshishStrive\manusRemoteArmz\app\src\main\AndroidManifest.xml:15:9-48
 36
 37        <!-- Add meta-data for Google Services -->
 38        <meta-data
-38-->C:\Users\Ashish\AshishRemote\manusRemoteArmz\app\src\main\AndroidManifest.xml:18:9-20:69
+38-->C:\Users\Ashish\AshishStrive\manusRemoteArmz\app\src\main\AndroidManifest.xml:18:9-20:69
 39            android:name="com.google.android.gms.version"
-39-->C:\Users\Ashish\AshishRemote\manusRemoteArmz\app\src\main\AndroidManifest.xml:19:13-58
+39-->C:\Users\Ashish\AshishStrive\manusRemoteArmz\app\src\main\AndroidManifest.xml:19:13-58
 40            android:value="@integer/google_play_services_version" />
-40-->C:\Users\Ashish\AshishRemote\manusRemoteArmz\app\src\main\AndroidManifest.xml:20:13-66
+40-->C:\Users\Ashish\AshishStrive\manusRemoteArmz\app\src\main\AndroidManifest.xml:20:13-66
 41
 42        <activity
-42-->C:\Users\Ashish\AshishRemote\manusRemoteArmz\app\src\main\AndroidManifest.xml:22:9-30:20
+42-->C:\Users\Ashish\AshishStrive\manusRemoteArmz\app\src\main\AndroidManifest.xml:22:9-30:20
 43            android:name="com.remotearmz.commandcenter.MainActivity"
-43-->C:\Users\Ashish\AshishRemote\manusRemoteArmz\app\src\main\AndroidManifest.xml:23:13-41
+43-->C:\Users\Ashish\AshishStrive\manusRemoteArmz\app\src\main\AndroidManifest.xml:23:13-41
 44            android:exported="true"
-44-->C:\Users\Ashish\AshishRemote\manusRemoteArmz\app\src\main\AndroidManifest.xml:24:13-36
+44-->C:\Users\Ashish\AshishStrive\manusRemoteArmz\app\src\main\AndroidManifest.xml:24:13-36
 45            android:theme="@style/Theme.RemoteArmz" >
-45-->C:\Users\Ashish\AshishRemote\manusRemoteArmz\app\src\main\AndroidManifest.xml:25:13-52
+45-->C:\Users\Ashish\AshishStrive\manusRemoteArmz\app\src\main\AndroidManifest.xml:25:13-52
 46            <intent-filter>
-46-->C:\Users\Ashish\AshishRemote\manusRemoteArmz\app\src\main\AndroidManifest.xml:26:13-29:29
+46-->C:\Users\Ashish\AshishStrive\manusRemoteArmz\app\src\main\AndroidManifest.xml:26:13-29:29
 47                <action android:name="android.intent.action.MAIN" />
-47-->C:\Users\Ashish\AshishRemote\manusRemoteArmz\app\src\main\AndroidManifest.xml:27:17-69
-47-->C:\Users\Ashish\AshishRemote\manusRemoteArmz\app\src\main\AndroidManifest.xml:27:25-66
+47-->C:\Users\Ashish\AshishStrive\manusRemoteArmz\app\src\main\AndroidManifest.xml:27:17-69
+47-->C:\Users\Ashish\AshishStrive\manusRemoteArmz\app\src\main\AndroidManifest.xml:27:25-66
 48
 49                <category android:name="android.intent.category.LAUNCHER" />
-49-->C:\Users\Ashish\AshishRemote\manusRemoteArmz\app\src\main\AndroidManifest.xml:28:17-77
-49-->C:\Users\Ashish\AshishRemote\manusRemoteArmz\app\src\main\AndroidManifest.xml:28:27-74
+49-->C:\Users\Ashish\AshishStrive\manusRemoteArmz\app\src\main\AndroidManifest.xml:28:17-77
+49-->C:\Users\Ashish\AshishStrive\manusRemoteArmz\app\src\main\AndroidManifest.xml:28:27-74
 50            </intent-filter>
 51        </activity>
 52

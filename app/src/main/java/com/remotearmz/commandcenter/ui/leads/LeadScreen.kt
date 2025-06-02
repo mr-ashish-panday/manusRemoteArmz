@@ -1,10 +1,15 @@
 package com.remotearmz.commandcenter.ui.leads
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,17 +19,24 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.FilterList
+import androidx.compose.material.icons.filled.PersonOutline
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.SearchOff
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -32,10 +44,16 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledTonalIconButton
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -43,6 +61,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -55,14 +74,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.remotearmz.commandcenter.R
 import com.remotearmz.commandcenter.data.model.Lead
 import com.remotearmz.commandcenter.data.model.LeadStatus
+import com.remotearmz.commandcenter.ui.components.FormDialog
 import com.remotearmz.commandcenter.ui.components.KpiCard
+import com.remotearmz.commandcenter.ui.components.search.EnhancedSearchBar
+import com.remotearmz.commandcenter.ui.components.states.EmptyState
+import com.remotearmz.commandcenter.ui.components.states.ErrorState
+import com.remotearmz.commandcenter.ui.components.states.LoadingState
 import com.remotearmz.commandcenter.ui.theme.getStatusColor
 import com.remotearmz.commandcenter.util.CurrencyConverter
 import com.remotearmz.commandcenter.util.DateFormatter
@@ -84,7 +111,21 @@ fun LeadScreen(
     var showAddEditDialog by remember { mutableStateOf(false) }
     var currentLead by remember { mutableStateOf<Lead?>(null) }
     var showFilterMenu by remember { mutableStateOf(false) }
+    var showFilterSheet by remember { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf("") }
+    val statusFilter by viewModel.statusFilter.collectAsState()
+    
+    // Calculate active filters
+    val activeFilters = remember(statusFilter, viewModel.searchQuery.value) {
+        mutableListOf<Pair<String, () -> Unit>>().apply {
+            if (statusFilter != null) {
+                add(Pair("Status: ${statusFilter.name}") { viewModel.updateStatusFilter(null) })
+            }
+            if (viewModel.searchQuery.value.isNotEmpty()) {
+                add(Pair("Search: ${viewModel.searchQuery.value}") { viewModel.updateSearchQuery("") })
+            }
+        }
+    }
     
     // Handle UI state changes
     LaunchedEffect(uiState) {
@@ -105,6 +146,85 @@ fun LeadScreen(
         }
     }
     
+    val sheetState = rememberModalBottomSheetState()
+    
+    if (showFilterSheet) {
+        ModalBottomSheet(
+            onDismissRequest = { showFilterSheet = false },
+            sheetState = sheetState
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = stringResource(R.string.filter),
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold
+                    )
+                    TextButton(onClick = { 
+                        viewModel.updateStatusFilter(null)
+                    }) {
+                        Text(stringResource(R.string.reset_filters))
+                    }
+                }
+                
+                Spacer(modifier = Modifier.height(16.dp))
+                
+                Text(
+                    text = stringResource(R.string.status),
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(vertical = 8.dp)
+                )
+                
+                // Status Filter Chips
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    FilterChip(
+                        selected = statusFilter == null,
+                        onClick = { viewModel.updateStatusFilter(null) },
+                        label = { Text("All") },
+                        modifier = Modifier.padding(end = 4.dp)
+                    )
+                    
+                    LeadStatus.values().forEach { status ->
+                        FilterChip(
+                            selected = statusFilter == status,
+                            onClick = { 
+                                viewModel.updateStatusFilter(
+                                    if (statusFilter == status) null else status
+                                )
+                            },
+                            label = { Text(status.name) },
+                            modifier = Modifier.padding(end = 4.dp)
+                        )
+                    }
+                }
+                
+                Spacer(modifier = Modifier.height(16.dp))
+                
+                Button(
+                    onClick = { showFilterSheet = false },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp)
+                ) {
+                    Text(stringResource(R.string.apply_filters))
+                }
+                
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+        }
+    }
+    
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         floatingActionButton = {
@@ -122,7 +242,6 @@ fun LeadScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(16.dp)
         ) {
             // Stats Cards
             LeadStatsSection(leadStats)
@@ -130,55 +249,64 @@ fun LeadScreen(
             Spacer(modifier = Modifier.height(16.dp))
             
             // Search and Filter
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
             ) {
-                OutlinedTextField(
-                    value = searchQuery,
-                    onValueChange = { 
-                        searchQuery = it
-                        viewModel.updateSearchQuery(it)
-                    },
-                    placeholder = { Text("Search leads...") },
-                    leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
-                    trailingIcon = {
-                        if (searchQuery.isNotEmpty()) {
-                            IconButton(onClick = { 
-                                searchQuery = ""
-                                viewModel.updateSearchQuery("") 
-                            }) {
-                                Icon(Icons.Default.Clear, contentDescription = "Clear search")
-                            }
-                        }
-                    },
-                    modifier = Modifier.weight(1f)
+                EnhancedSearchBar(
+                    query = viewModel.searchQuery.value,
+                    onQueryChange = { viewModel.updateSearchQuery(it) },
+                    onSearch = { viewModel.updateSearchQuery(it) },
+                    activeFilters = activeFilters,
+                    onFilterClick = { showFilterSheet = true },
+                    placeholder = stringResource(R.string.search_leads)
                 )
                 
-                Box {
-                    IconButton(onClick = { showFilterMenu = true }) {
-                        Icon(Icons.Default.FilterList, contentDescription = "Filter")
-                    }
-                    
-                    DropdownMenu(
-                        expanded = showFilterMenu,
-                        onDismissRequest = { showFilterMenu = false }
+                // Active filters row
+                if (activeFilters.isNotEmpty()) {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 4.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        DropdownMenuItem(
-                            text = { Text("All Leads") },
-                            onClick = {
-                                viewModel.updateStatusFilter(null)
-                                showFilterMenu = false
-                            }
+                        Text(
+                            text = "Active filters:",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
-                        LeadStatus.values().forEach { status ->
-                            DropdownMenuItem(
-                                text = { Text(status.name) },
-                                onClick = {
-                                    viewModel.updateStatusFilter(status)
-                                    showFilterMenu = false
-                                }
+                        
+                        activeFilters.forEach { (filter, onRemove) ->
+                            FilterChip(
+                                selected = true,
+                                onClick = { onRemove() },
+                                label = { Text(filter) },
+                                trailingIcon = {
+                                    Icon(
+                                        Icons.Default.Close,
+                                        contentDescription = "Remove filter",
+                                        modifier = Modifier.size(FilterChipDefaults.IconSize)
+                                    )
+                                },
+                                colors = FilterChipDefaults.filterChipColors(
+                                    selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                                    selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                                    selectedLeadingIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                                    selectedTrailingIconColor = MaterialTheme.colorScheme.onPrimaryContainer
+                                )
                             )
+                        }
+                        
+                        if (activeFilters.size > 1) {
+                            TextButton(
+                                onClick = { viewModel.updateStatusFilter(null) },
+                                modifier = Modifier.padding(start = 4.dp)
+                            ) {
+                                Text("Clear all")
+                            }
                         }
                     }
                 }
@@ -186,51 +314,77 @@ fun LeadScreen(
             
             Spacer(modifier = Modifier.height(16.dp))
             
-            // Lead List
-            if (uiState.isLoading) {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator()
+            when {
+                uiState.isLoading -> {
+                    LoadingState()
                 }
-            } else if (leads.isEmpty()) {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text("No leads found", style = MaterialTheme.typography.titleMedium)
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Button(
-                            onClick = {
-                                currentLead = null
-                                showAddEditDialog = true
-                            }
-                        ) {
-                            Text("Add your first lead")
-                        }
-                    }
-                }
-            } else {
-                LazyColumn {
-                    items(leads) { lead ->
-                        LeadItem(
-                            lead = lead,
-                            onEdit = {
-                                currentLead = lead
-                                showAddEditDialog = true
-                            },
-                            onDelete = {
-                                scope.launch {
-                                    val result = snackbarHostState.showSnackbar(
-                                        message = "Delete ${lead.contactName}?",
-                                        actionLabel = "Delete"
-                                    )
-                                    if (result == androidx.compose.material3.SnackbarResult.ActionPerformed) {
-                                        viewModel.deleteLead(lead)
+                leads.isEmpty() -> {
+                    EmptyState(
+                        title = if (viewModel.searchQuery.value.isNotEmpty() || statusFilter != null) {
+                            stringResource(R.string.no_results_title)
+                        } else {
+                            stringResource(R.string.no_leads_title)
+                        },
+                        message = if (viewModel.searchQuery.value.isNotEmpty() || statusFilter != null) {
+                            stringResource(R.string.no_results_message)
+                        } else {
+                            stringResource(R.string.no_leads_message)
+                        },
+                        icon = {
+                            Icon(
+                                if (viewModel.searchQuery.value.isNotEmpty() || statusFilter != null) 
+                                    Icons.Default.SearchOff 
+                                else 
+                                    Icons.Default.PersonOutline,
+                                contentDescription = null,
+                                modifier = Modifier.size(48.dp),
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        },
+                        action = {
+                            if (viewModel.searchQuery.value.isNotEmpty() || statusFilter != null) {
+                                Button(
+                                    onClick = {
+                                        viewModel.updateSearchQuery("")
+                                        viewModel.updateStatusFilter(null)
                                     }
+                                ) {
+                                    Text(stringResource(R.string.clear_filters))
                                 }
-                            },
-                            onStatusChange = { newStatus ->
-                                viewModel.updateLeadStatus(lead, newStatus)
+                            } else {
+                                Button(
+                                    onClick = {
+                                        currentLead = null
+                                        showAddEditDialog = true
+                                    }
+                                ) {
+                                    Text(stringResource(R.string.add_first_lead))
+                                }
                             }
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
+                        }
+                    )
+                }
+                else -> {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        contentPadding = PaddingValues(vertical = 8.dp, horizontal = 16.dp)
+                    ) {
+                        items(leads) { lead ->
+                            LeadItem(
+                                lead = lead,
+                                onEdit = {
+                                    currentLead = lead
+                                    showAddEditDialog = true
+                                },
+                                onDelete = {
+                                    viewModel.deleteLead(lead.id)
+                                },
+                                onStatusChange = { newStatus ->
+                                    viewModel.updateLeadStatus(lead.id, newStatus)
+                                }
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                        }
                     }
                 }
             }
@@ -246,180 +400,6 @@ fun LeadScreen(
                 viewModel.saveLead(lead)
             }
         )
-    }
-}
-
-@Composable
-fun LeadStatsSection(stats: LeadStats) {
-    Column {
-        Text(
-            "Lead Statistics",
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.padding(bottom = 8.dp)
-        )
-        
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            KpiCard(
-                title = "Total Leads",
-                value = stats.totalCount.toString(),
-                modifier = Modifier.weight(1f)
-            )
-            KpiCard(
-                title = "Active Leads",
-                value = stats.activeCount.toString(),
-                modifier = Modifier.weight(1f)
-            )
-        }
-        
-        Spacer(modifier = Modifier.height(8.dp))
-        
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            KpiCard(
-                title = "Conversion Rate",
-                value = "${String.format("%.1f", stats.conversionRate)}%",
-                modifier = Modifier.weight(1f)
-            )
-            KpiCard(
-                title = "Potential Value",
-                value = CurrencyConverter.formatUSD(stats.weightedValueUSD),
-                subtitle = "(Weighted)",
-                modifier = Modifier.weight(1f)
-            )
-        }
-    }
-}
-
-@Composable
-fun LeadItem(
-    lead: Lead,
-    onEdit: () -> Unit,
-    onDelete: () -> Unit,
-    onStatusChange: (LeadStatus) -> Unit
-) {
-    var showStatusMenu by remember { mutableStateOf(false) }
-    
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onEdit() },
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-    ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text = lead.contactName,
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                    Text(
-                        text = lead.company,
-                        style = MaterialTheme.typography.bodyMedium,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                }
-                
-                Box(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(4.dp))
-                        .background(getStatusColor(lead.status.name))
-                        .clickable { showStatusMenu = true }
-                        .padding(horizontal = 8.dp, vertical = 4.dp)
-                ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(
-                            text = lead.status.name,
-                            color = Color.White,
-                            style = MaterialTheme.typography.bodySmall
-                        )
-                        Icon(
-                            Icons.Default.ArrowDropDown,
-                            contentDescription = "Change status",
-                            tint = Color.White,
-                            modifier = Modifier.size(16.dp)
-                        )
-                    }
-                    
-                    DropdownMenu(
-                        expanded = showStatusMenu,
-                        onDismissRequest = { showStatusMenu = false }
-                    ) {
-                        LeadStatus.values().forEach { status ->
-                            DropdownMenuItem(
-                                text = { Text(status.name) },
-                                onClick = {
-                                    onStatusChange(status)
-                                    showStatusMenu = false
-                                },
-                                leadingIcon = {
-                                    if (status == lead.status) {
-                                        Icon(Icons.Default.Check, contentDescription = null)
-                                    }
-                                }
-                            )
-                        }
-                    }
-                }
-            }
-            
-            Spacer(modifier = Modifier.height(8.dp))
-            
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Column {
-                    Text(
-                        "Value: ${CurrencyConverter.formatUSD(lead.valueUSD)}",
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                    Text(
-                        "Probability: ${lead.probability}%",
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                }
-                
-                Column(horizontalAlignment = Alignment.End) {
-                    lead.expectedCloseDate?.let { closeDate ->
-                        Text(
-                            "Expected Close: ${DateFormatter.formatDate(closeDate)}",
-                            style = MaterialTheme.typography.bodySmall
-                        )
-                    }
-                    Text(
-                        "Source: ${lead.source.ifEmpty { "Not specified" }}",
-                        style = MaterialTheme.typography.bodySmall
-                    )
-                }
-            }
-            
-            Spacer(modifier = Modifier.height(8.dp))
-            
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End
-            ) {
-                IconButton(onClick = onEdit) {
-                    Icon(Icons.Default.Edit, contentDescription = "Edit")
-                }
-                IconButton(onClick = onDelete) {
-                    Icon(Icons.Default.Delete, contentDescription = "Delete")
-                }
-            }
-        }
     }
 }
 
@@ -441,154 +421,119 @@ fun LeadFormDialog(
     var status by remember { mutableStateOf(lead?.status ?: LeadStatus.NEW) }
     var expectedCloseDateMillis by remember { mutableStateOf(lead?.expectedCloseDate) }
     
-    Dialog(onDismissRequest = onDismiss) {
-        Surface(
-            shape = RoundedCornerShape(16.dp),
-            color = MaterialTheme.colorScheme.surface
-        ) {
-            Column(modifier = Modifier.padding(20.dp)) {
-                Text(
-                    text = if (isNewLead) "Add New Lead" else "Edit Lead",
-                    style = MaterialTheme.typography.titleLarge
-                )
-                
-                Spacer(modifier = Modifier.height(16.dp))
-                
-                OutlinedTextField(
-                    value = contactName,
-                    onValueChange = { contactName = it },
-                    label = { Text("Contact Name") },
-                    modifier = Modifier.fillMaxWidth()
-                )
-                
-                Spacer(modifier = Modifier.height(8.dp))
-                
-                OutlinedTextField(
-                    value = company,
-                    onValueChange = { company = it },
-                    label = { Text("Company") },
-                    modifier = Modifier.fillMaxWidth()
-                )
-                
-                Spacer(modifier = Modifier.height(8.dp))
-                
-                OutlinedTextField(
-                    value = phone,
-                    onValueChange = { phone = it },
-                    label = { Text("Phone") },
-                    modifier = Modifier.fillMaxWidth()
-                )
-                
-                Spacer(modifier = Modifier.height(8.dp))
-                
-                OutlinedTextField(
-                    value = email,
-                    onValueChange = { email = it },
-                    label = { Text("Email") },
-                    modifier = Modifier.fillMaxWidth()
-                )
-                
-                Spacer(modifier = Modifier.height(8.dp))
-                
-                Row(modifier = Modifier.fillMaxWidth()) {
-                    OutlinedTextField(
-                        value = valueUSD,
-                        onValueChange = { valueUSD = it },
-                        label = { Text("Value (USD)") },
-                        modifier = Modifier.weight(1f)
+    // Status dropdown state
+    var showStatusDropdown by remember { mutableStateOf(false) }
+    
+    // Form validation
+    val isFormValid = contactName.isNotBlank() && company.isNotBlank()
+    
+    // Use our custom FormDialog component
+    FormDialog(
+        title = if (isNewLead) "Add New Lead" else "Edit Lead",
+        onDismiss = onDismiss,
+        confirmButton = {
+            Button(
+                onClick = {
+                    val newLead = Lead(
+                        id = lead?.id ?: UUID.randomUUID().toString(),
+                        contactName = contactName,
+                        company = company,
+                        phone = phone,
+                        email = email,
+                        valueUSD = valueUSD.toDoubleOrNull() ?: 0.0,
+                        probability = probability.toIntOrNull()?.coerceIn(0, 100) ?: 0,
+                        source = source,
+                        status = status,
+                        expectedCloseDate = expectedCloseDateMillis,
+                        clientId = lead?.clientId,
+                        createdAt = lead?.createdAt ?: System.currentTimeMillis(),
+                        updatedAt = System.currentTimeMillis()
                     )
-                    
-                    Spacer(modifier = Modifier.size(8.dp))
-                    
-                    OutlinedTextField(
-                        value = probability,
-                        onValueChange = { probability = it },
-                        label = { Text("Probability (%)") },
-                        modifier = Modifier.weight(1f)
-                    )
-                }
-                
-                Spacer(modifier = Modifier.height(8.dp))
-                
-                OutlinedTextField(
-                    value = source,
-                    onValueChange = { source = it },
-                    label = { Text("Source") },
-                    modifier = Modifier.fillMaxWidth()
+                    onSave(newLead)
+                },
+                enabled = isFormValid,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    disabledContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
                 )
-                
-                Spacer(modifier = Modifier.height(8.dp))
-                
-                // Status dropdown
-                var showStatusDropdown by remember { mutableStateOf(false) }
-                Box(modifier = Modifier.fillMaxWidth()) {
-                    OutlinedTextField(
-                        value = status.name,
-                        onValueChange = { },
-                        label = { Text("Status") },
-                        readOnly = true,
-                        trailingIcon = {
-                            Icon(
-                                Icons.Default.ArrowDropDown,
-                                contentDescription = "Select status",
-                                modifier = Modifier.clickable { showStatusDropdown = true }
-                            )
-                        },
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                    
-                    DropdownMenu(
-                        expanded = showStatusDropdown,
-                        onDismissRequest = { showStatusDropdown = false },
-                        modifier = Modifier.fillMaxWidth(0.9f)
-                    ) {
-                        LeadStatus.values().forEach { leadStatus ->
-                            DropdownMenuItem(
-                                text = { Text(leadStatus.name) },
-                                onClick = {
-                                    status = leadStatus
-                                    showStatusDropdown = false
-                                }
-                            )
-                        }
-                    }
-                }
-                
-                Spacer(modifier = Modifier.height(16.dp))
-                
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End
-                ) {
-                    TextButton(onClick = onDismiss) {
-                        Text("Cancel")
-                    }
-                    
-                    Button(
-                        onClick = {
-                            val newLead = Lead(
-                                id = lead?.id ?: UUID.randomUUID().toString(),
-                                contactName = contactName,
-                                company = company,
-                                phone = phone,
-                                email = email,
-                                valueUSD = valueUSD.toDoubleOrNull() ?: 0.0,
-                                probability = probability.toIntOrNull()?.coerceIn(0, 100) ?: 0,
-                                source = source,
-                                status = status,
-                                expectedCloseDate = expectedCloseDateMillis,
-                                clientId = lead?.clientId,
-                                createdAt = lead?.createdAt ?: System.currentTimeMillis(),
-                                updatedAt = System.currentTimeMillis()
-                            )
-                            onSave(newLead)
-                        },
-                        enabled = contactName.isNotBlank() && company.isNotBlank()
-                    ) {
-                        Text("Save")
-                    }
-                }
+            ) {
+                Text("Save")
             }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = onDismiss,
+                colors = ButtonDefaults.textButtonColors(
+                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            ) {
+                Text("Cancel")
+            }
+        }
+    ) {
+        // Form fields
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .verticalScroll(rememberScrollState())
+                .padding(vertical = 8.dp)
+                .heightIn(max = 500.dp)
+        ) {
+            // Contact Name
+            OutlinedTextField(
+                value = contactName,
+                onValueChange = { contactName = it },
+                label = { Text("Contact Name *") },
+                isError = contactName.isBlank(),
+                supportingText = {
+                    if (contactName.isBlank()) {
+                        Text("Required field")
+                    }
+                },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true
+            )
+            
+            Spacer(modifier = Modifier.height(12.dp))
+            
+            // Company
+            OutlinedTextField(
+                value = company,
+                onValueChange = { company = it },
+                label = { Text("Company *") },
+                isError = company.isBlank(),
+                supportingText = {
+                    if (company.isBlank()) {
+                        Text("Required field")
+                    }
+                },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true
+            )
+            
+            Spacer(modifier = Modifier.height(12.dp))
+            
+            // Phone
+            OutlinedTextField(
+                value = phone,
+                onValueChange = { phone = it },
+                label = { Text("Phone") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true
+            )
+            
+            Spacer(modifier = Modifier.height(12.dp))
+            
+            // Email
+            OutlinedTextField(
+                value = email,
+                onValueChange = { email = it },
+                label = { Text("Email") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true
+            )
         }
     }
 }

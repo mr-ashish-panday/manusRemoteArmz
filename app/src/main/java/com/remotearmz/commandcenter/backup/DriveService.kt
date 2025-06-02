@@ -7,7 +7,7 @@ import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccoun
 import com.google.api.client.json.gson.GsonFactory
 import com.google.api.services.drive.Drive
 import com.google.api.services.drive.DriveScopes
-import com.google.api.services.drive.model.File
+import com.google.api.services.drive.model.File as DriveFile
 import com.remotearmz.commandcenter.R
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -18,12 +18,13 @@ import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.text.SimpleDateFormat
-import java.util.Collections
-import java.util.Date
-import java.util.Locale
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
+/**
+ * Service for interacting with Google Drive for backup and restore functionality.
+ */
 @Singleton
 class DriveService @Inject constructor(
     @ApplicationContext private val context: Context
@@ -38,7 +39,7 @@ class DriveService @Inject constructor(
         val account = GoogleSignIn.getLastSignedInAccount(context)
         if (account != null) {
             val credential = GoogleAccountCredential.usingOAuth2(
-                context, Collections.singleton(DriveScopes.DRIVE_FILE)
+                context, setOf(DriveScopes.DRIVE_FILE)
             )
             credential.selectedAccount = account.account
             
@@ -54,96 +55,140 @@ class DriveService @Inject constructor(
         }
     }
     
+    /**
+     * Uploads a backup to Google Drive.
+     *
+     * @param data The data to backup as a JSON string
+     * @param fileName Optional custom file name (without extension)
+     * @return true if the backup was successful, false otherwise
+     */
     suspend fun uploadBackup(data: String, fileName: String? = null): Boolean {
         return withContext(Dispatchers.IO) {
             try {
                 _backupStatus.value = BackupStatus.InProgress("Uploading backup...")
                 
                 val driveService = drive ?: run {
-                    _backupStatus.value = BackupStatus.Failed("Not signed in")
+                    _backupStatus.value = BackupStatus.Failed("Not signed in to Google Drive")
                     return@withContext false
                 }
                 
                 val backupFileName = if (fileName != null) {
-                    fileName
+                    "${fileName}.json"
                 } else {
                     val dateFormat = SimpleDateFormat("yyyy-MM-dd_HH-mm-ss", Locale.getDefault())
                     "remotearmz_backup_${dateFormat.format(Date())}.json"
                 }
                 
-                val fileMetadata = File()
+                val fileMetadata = DriveFile()
                 fileMetadata.name = backupFileName
                 fileMetadata.mimeType = "application/json"
                 
-                val contentStream = ByteArrayOutputStream()
-                contentStream.write(data.toByteArray())
+                // Add app folder property for better organization
+                fileMetadata.parents = listOf("appDataFolder")
                 
                 val mediaContent = com.google.api.client.http.ByteArrayContent
                     .fromString("application/json", data)
                 
                 val file = driveService.files().create(fileMetadata, mediaContent)
-                    .setFields("id, name, createdTime")
+                    .setFields("id, name, modifiedTime, size")
                     .execute()
                 
-                _lastBackupTime.value = System.currentTimeMillis()
-                _backupStatus.value = BackupStatus.Success("Backup completed successfully")
+                // Update last backup time
+                val modifiedTime = file.modifiedTime?.value ?: System.currentTimeMillis()
+                _lastBackupTime.value = modifiedTime
+                
+                _backupStatus.value = BackupStatus.success("Backup completed successfully")
                 true
             } catch (e: IOException) {
-                _backupStatus.value = BackupStatus.Failed(e.message ?: "Unknown error")
+                _backupStatus.value = BackupStatus.failed("Backup failed: ${e.message ?: "Unknown error"}", e)
+                false
+            } catch (e: Exception) {
+                _backupStatus.value = BackupStatus.failed("Unexpected error: ${e.message ?: "Unknown error"}", e)
                 false
             }
         }
     }
     
+    /**
+     * Lists all available backups in the user's Google Drive.
+     *
+     * @return List of [DriveBackupFile] objects representing the backups
+     */
     suspend fun listBackups(): List<DriveBackupFile> {
         return withContext(Dispatchers.IO) {
             try {
                 val driveService = drive ?: return@withContext emptyList()
                 
                 val result = driveService.files().list()
-                    .setQ("name contains 'remotearmz_backup' and mimeType = 'application/json'")
-                    .setSpaces("drive")
-                    .setFields("files(id, name, createdTime)")
+                    .setQ("name contains 'remotearmz_backup' and mimeType = 'application/json' and 'appDataFolder' in parents")
+                    .setSpaces("appDataFolder")
+                    .setFields("files(id, name, size, modifiedTime, mimeType)")
+                    .setOrderBy("modifiedTime desc") // Most recent first
                     .execute()
                 
-                result.files.map { file ->
+                result.files?.map { file ->
                     DriveBackupFile(
                         id = file.id,
-                        name = file.name,
-                        createdTime = file.createdTime.value
+                        name = file.name.replace(".json", ""),
+                        size = file.size ?: 0,
+                        modifiedTime = file.modifiedTime?.value ?: 0,
+                        mimeType = file.mimeType ?: "application/json"
                     )
-                }
-            } catch (e: IOException) {
+                } ?: emptyList()
+            } catch (e: Exception) {
+                _backupStatus.value = BackupStatus.failed("Failed to list backups: ${e.message ?: "Unknown error"}", e)
                 emptyList()
             }
         }
     }
     
+    /**
+     * Downloads a backup file from Google Drive.
+     *
+     * @param fileId The ID of the file to download
+     * @return The file contents as a string, or null if the download failed
+     */
     suspend fun downloadBackup(fileId: String): String? {
         return withContext(Dispatchers.IO) {
             try {
                 val driveService = drive ?: return@withContext null
                 
                 val outputStream = ByteArrayOutputStream()
-                driveService.files().get(fileId).executeMediaAndDownloadTo(outputStream)
+                driveService.files().get(fileId)
+                    .executeMediaAndDownloadTo(outputStream)
                 
                 String(outputStream.toByteArray())
-            } catch (e: IOException) {
+            } catch (e: Exception) {
+                _backupStatus.value = BackupStatus.failed("Failed to download backup: ${e.message ?: "Unknown error"}", e)
                 null
             }
         }
     }
+    
+    /**
+     * Deletes a backup file from Google Drive.
+     *
+     * @param fileId The ID of the file to delete
+     * @return true if the deletion was successful, false otherwise
+     */
+    suspend fun deleteBackup(fileId: String): Boolean {
+        return withContext(Dispatchers.IO) {
+            try {
+                val driveService = drive ?: return@withContext false
+                
+                driveService.files().delete(fileId).execute()
+                true
+            } catch (e: Exception) {
+                _backupStatus.value = BackupStatus.failed("Failed to delete backup: ${e.message ?: "Unknown error"}", e)
+                false
+            }
+        }
+    }
+    
+    /**
+     * Clears the current backup status.
+     */
+    fun clearStatus() {
+        _backupStatus.value = BackupStatus.Idle
+    }
 }
-
-sealed class BackupStatus {
-    object Idle : BackupStatus()
-    data class InProgress(val message: String = "In progress...") : BackupStatus()
-    data class Success(val message: String) : BackupStatus()
-    data class Failed(val error: String) : BackupStatus()
-}
-
-data class DriveBackupFile(
-    val id: String,
-    val name: String,
-    val createdTime: Long
-)
